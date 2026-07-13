@@ -71,7 +71,7 @@
             <nav class="hidden md:flex space-x-8">
                 <a href="#blueprint" class="text-slate-300 hover:text-white transition text-sm font-medium">Architecture</a>
                 <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Simulation</a>
-                <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">Repositories</a>
+                <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">My Repositories</a>
                 <a href="#engineering-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Articles</a>
             </nav>
             <div class="flex items-center space-x-3">
@@ -314,7 +314,7 @@
                     </div>
                 </div>
 
-                <!-- Simulation Console Console -->
+                <!-- Simulation Console -->
                 <div class="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-[350px]">
                     <div class="border-b border-slate-800 bg-slate-900/60 px-4 py-3 flex items-center justify-between">
                         <div class="flex space-x-1.5">
@@ -334,24 +334,36 @@
         <section id="github-hub" class="space-y-6">
             <div class="space-y-2">
                 <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Live Code Metrics</span>
-                <h3 class="text-2xl font-bold text-white">Dynamic Code Integration Hub</h3>
+                <h3 class="text-2xl font-bold text-white">Dynamic Repository Workspace</h3>
                 <p class="text-slate-400 text-sm max-w-3xl">
-                    By bypassing expensive premium builders, this site queries the public, unauthenticated **GitHub REST API** straight from your client's browser to display live project statistics. Try loading a target GitHub handle below!
+                    By bypassing expensive premium builders, this site queries the public, unauthenticated **GitHub REST API** straight from your client's browser to display live project statistics. Enter any GitHub username to load their repositories dynamically.
                 </p>
             </div>
 
             <!-- Profile Target Input -->
-            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                <div class="relative w-full max-w-sm">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
-                        <span class="material-icons text-sm">alternate_email</span>
-                    </span>
-                    <input type="text" id="gh-username" value="facebook" class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition mono" placeholder="GitHub Username">
+            <div class="space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 items-center">
+                    <div class="relative w-full max-w-sm">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                            <span class="material-icons text-sm">alternate_email</span>
+                        </span>
+                        <input type="text" id="gh-username" value="HarpN" class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition mono" placeholder="GitHub Username">
+                    </div>
+                    <button onclick="fetchRepositories()" class="w-full sm:w-auto py-2 px-5 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-sm font-semibold text-white flex items-center justify-center space-x-2">
+                        <span class="material-icons text-sm">sync</span>
+                        <span>Query Repositories</span>
+                    </button>
                 </div>
-                <button onclick="fetchRepositories()" class="w-full sm:w-auto py-2 px-5 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-sm font-semibold text-white flex items-center justify-center space-x-2">
-                    <span class="material-icons text-sm">sync</span>
-                    <span>Query Repositories</span>
-                </button>
+                <div class="flex flex-wrap gap-2 items-center text-xs">
+                    <span class="text-slate-400">Quick-Switch Presets:</span>
+                    <button onclick="setAndQueryPreset('HarpN')" class="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 hover:text-white transition mono flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                        <span>HarpN (Primary)</span>
+                    </button>
+                    <button onclick="setAndQueryPreset('modelcontextprotocol')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">modelcontextprotocol</button>
+                    <button onclick="setAndQueryPreset('lobehub')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">lobehub</button>
+                    <button onclick="setAndQueryPreset('DevNvll')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">DevNvll</button>
+                </div>
             </div>
 
             <!-- Repository Cards Container -->
@@ -455,7 +467,7 @@
 
     <footer class="border-t border-slate-800 bg-slate-950 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500">
-            <p>© 2026 Trophy Backlog Command Center. Engineered for full architectural decoupling.</p>
+            <p>© 2026 Trophy Backlog Command Center. Configured dynamically with live GitHub profiles.</p>
             <div class="flex space-x-6 mt-4 md:mt-0">
                 <span class="hover:text-slate-300 transition cursor-pointer">Protocol Standard</span>
                 <span class="hover:text-slate-300 transition cursor-pointer">Security Ledger</span>
@@ -465,7 +477,6 @@
     </footer>
 
     <script>
-        // 1. Data Store for Blueprint Components
         const components = {
             sly: {
                 title: "Sly (PlayStation Network Ingestion)",
@@ -532,7 +543,6 @@
             }
         };
 
-        // 2. Interactive Blueprint Inspector Handlers
         function inspect(componentKey) {
             const data = components[componentKey];
             if (!data) return;
@@ -562,7 +572,6 @@
             document.getElementById("inspect-icon").innerText = iconMap[componentKey] || "help_outline";
         }
 
-        // 3. Simulated Logs Ingestion Streams
         const consoleEl = document.getElementById("sim-console");
 
         function logToConsole(message, type = 'info') {
@@ -656,7 +665,11 @@
             document.getElementById("sim-replication-status").innerText = repl;
         }
 
-        // 4. Dynamic GitHub Public API Integration
+        function setAndQueryPreset(username) {
+            document.getElementById("gh-username").value = username;
+            fetchRepositories();
+        }
+
         async function fetchRepositories() {
             const username = document.getElementById("gh-username").value.trim();
             const grid = document.getElementById("repo-grid");
@@ -673,7 +686,7 @@
                 </div>`;
 
             try {
-                // Free, client-side GET request to public endpoint
+                // Perform dynamic GET request to fetch 6 most recently updated repositories
                 const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
                 
                 if (!response.ok) {
@@ -700,7 +713,7 @@
                                     ${repo.language || "Markdown"}
                                 </span>
                             </div>
-                            <h4 class="text-base font-bold text-white truncate">${repo.name}</h4>
+                            <h4 class="text-base font-bold text-white truncate" title="${repo.name}">${repo.name}</h4>
                             <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">
                                 ${repo.description || "No description provided for this public repository."}
                             </p>
@@ -726,7 +739,6 @@
             }
         }
 
-        // 5. Blog Modal Content Population
         const articles = {
             1: {
                 category: "Part I: Defending Sandbox",
@@ -774,10 +786,12 @@
             document.body.classList.remove("overflow-hidden");
         }
 
-        // Initialize Blueprint on Load
         window.onload = function() {
+            // Default select Charon architecture view
             inspect('charon');
-            fetchRepositories(); // Defaults to loading a default profile's projects
+            
+            // Automatically execute the primary GitHub search on load
+            fetchRepositories();
         }
     </script>
 </body>
