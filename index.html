@@ -35,6 +35,14 @@
             background: #475569;
         }
         /* Glow animations */
+        @keyframes pulse-glow-gold {
+            0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); border-color: rgba(245, 158, 11, 0.8); }
+        }
+        @keyframes pulse-glow-orange {
+            0%, 100% { box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); border-color: rgba(249, 115, 22, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(249, 115, 22, 0.5); border-color: rgba(249, 115, 22, 0.8); }
+        }
         @keyframes pulse-glow-blue {
             0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); }
             50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); border-color: rgba(59, 130, 246, 0.8); }
@@ -43,18 +51,10 @@
             0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
             50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); border-color: rgba(239, 68, 68, 0.8); }
         }
-        @keyframes pulse-glow-purple {
-            0%, 100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); border-color: rgba(168, 85, 247, 0.8); }
-        }
-        @keyframes pulse-glow-green {
-            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.5); border-color: rgba(34, 197, 94, 0.8); }
-        }
+        .active-gold { animation: pulse-glow-gold 2s infinite; }
+        .active-orange { animation: pulse-glow-orange 2s infinite; }
         .active-blue { animation: pulse-glow-blue 2s infinite; }
         .active-red { animation: pulse-glow-red 2s infinite; }
-        .active-purple { animation: pulse-glow-purple 2s infinite; }
-        .active-green { animation: pulse-glow-green 2s infinite; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-blue-500 selection:text-white">
@@ -62,22 +62,23 @@
     <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <span class="material-icons text-blue-500 text-3xl">security</span>
+                <span class="material-icons text-blue-500 text-3xl">developer_board</span>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight text-white">Trophy Backlog</h1>
-                    <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Command Center Dashboard</p>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Trophy Backlog Workspace</h1>
+                    <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Evolution & CMS Dashboard</p>
                 </div>
             </div>
             <nav class="hidden md:flex space-x-8">
-                <a href="#blueprint" class="text-slate-300 hover:text-white transition text-sm font-medium">Architecture</a>
-                <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Simulation</a>
-                <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">My Repositories</a>
-                <a href="#engineering-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Articles</a>
+                <a href="#evolution-map" class="text-slate-300 hover:text-white transition text-sm font-medium">Evolution Map</a>
+                <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Threat Simulator</a>
+                <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">Repo Workspace</a>
+                <a href="#cms-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Architect Notebook</a>
             </nav>
+            <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2"></div>
             <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    Systems Operational
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-400 animate-ping"></span>
+                    Architecture V3 Ready
                 </span>
             </div>
         </div>
@@ -85,83 +86,219 @@
 
     <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-16">
 
+        <!-- Welcome Banner & Explanatory Context -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
             <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                    <span class="text-xs text-slate-300 font-mono">Current Context: 3-Stage Evolution Matrix</span>
+                </div>
                 <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                    An Isolated, Multi-Agent <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Security-First</span> Data Lake
+                    Progress Codebases <br class="hidden sm:inline">
+                    From V1 & V2 To <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400">Zero-Trust V3 MCP</span>
                 </h2>
                 <p class="text-lg text-slate-300 leading-relaxed max-w-2xl">
-                    Welcome to the Trophy Backlog Command Center. This showcase is a fully isolated, air-gapped data plane architected to gather personal PlayStation Network telemetry and strategy guide data safely. It completely neutralizes internet prompt injection threats before the client-facing UI can touch it.
+                    Trace the security journey of your scrapers and sync engines. Compare the isolated standalone Python script (V1), the orchestrated multi-container architecture (V2), and the upcoming isolated Zero-Trust MCP Server & admission judge zone (V3).
                 </p>
                 <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="#blueprint" class="px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition font-medium text-sm inline-flex items-center space-x-2 shadow-lg shadow-blue-500/10">
-                        <span>Explore the Blueprint</span>
-                        <span class="material-icons text-sm">arrow_forward</span>
+                    <a href="#evolution-map" class="px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition font-medium text-sm inline-flex items-center space-x-2 shadow-lg shadow-blue-500/10">
+                        <span>Compare Phase Topologies</span>
+                        <span class="material-icons text-sm">swap_horiz</span>
                     </a>
-                    <a href="#simulator" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition font-medium text-sm text-slate-300 hover:text-white inline-flex items-center space-x-2">
-                        <span class="material-icons text-sm">science</span>
-                        <span>Run Threat Simulator</span>
+                    <a href="#cms-blog" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition font-medium text-sm text-slate-300 hover:text-white inline-flex items-center space-x-2">
+                        <span class="material-icons text-sm">edit_note</span>
+                        <span>Write Transition Note</span>
                     </a>
                 </div>
             </div>
+            
             <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Environment Metadata</span>
-                    <span class="text-xs text-blue-400 font-mono">v3.0.0-PROD</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Migration Health Score</span>
+                    <span class="text-xs text-blue-400 font-mono">Stage 2 → Stage 3 Transition</span>
                 </div>
-                <div class="space-y-3 font-mono text-sm">
-                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
-                        <span class="text-slate-500">Core Orchestration</span>
-                        <span class="text-slate-300">MCP Client (Charon)</span>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-400 mb-1">
+                            <span>V1 Standalone Python Scrapers Fully Retired</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-yellow-500 to-emerald-500 h-full" style="width: 100%"></div>
+                        </div>
                     </div>
-                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
-                        <span class="text-slate-500">Validation Protocol</span>
-                        <span class="text-slate-300">Admission Council (Rhadamanthys)</span>
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-400 mb-1">
+                            <span>V2 Multi-Container App (Streamlit & Node Sync-Bridge)</span>
+                            <span>80% Migrated</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-orange-500 to-yellow-500 h-full" style="width: 80%"></div>
+                        </div>
                     </div>
-                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
-                        <span class="text-slate-500">Immutable Ledger</span>
-                        <span class="text-slate-300">The Vault (Append-Only)</span>
-                    </div>
-                    <div class="flex justify-between pb-2">
-                        <span class="text-slate-500">Network Diode</span>
-                        <span class="text-slate-300">Hermes (Outbound Sync Only)</span>
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-400 mb-1">
+                            <span>V3 Decoupled Zero-Trust (MCP, Rhadamanthys, TheKeeper)</span>
+                            <span>25% Target Active</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-blue-500 h-full animate-pulse" style="width: 25%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="blueprint" class="space-y-6">
-            <div class="space-y-2">
-                <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">System Topology Map</span>
-                <h3 class="text-2xl font-bold text-white">Multi-Zone Network Separation</h3>
-                <p class="text-slate-400 text-sm max-w-3xl">
-                    Every element is isolated based on its security classification. Click on any component to inspect its code contract, operational zone, and defensive properties.
-                </p>
+        <!-- Interactive Topologies Switching Section -->
+        <section id="evolution-map" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="space-y-2">
+                    <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Architecture Evolution Matrix</span>
+                    <h3 class="text-2xl font-bold text-white">Select and Inspect Operational Topologies</h3>
+                    <p class="text-slate-400 text-sm max-w-2xl">
+                        Toggle between phases to evaluate how threat routes and data structures evolve from simple uninsulated scripts to resilient isolated pipelines.
+                    </p>
+                </div>
+                <!-- Interactive 3-Phase Mode Selector Tabs -->
+                <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex flex-wrap gap-2">
+                    <button id="toggle-v1-btn" onclick="switchTopology('v1')" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-yellow-500/10 text-yellow-400 border border-yellow-500/30">
+                        <span class="material-icons text-sm">code</span>
+                        <span>Phase 1: V1 Standalone Script</span>
+                    </button>
+                    <button id="toggle-v2-btn" onclick="switchTopology('v2')" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                        <span class="material-icons text-sm">widgets</span>
+                        <span>Phase 2: V2 Multi-Container App</span>
+                    </button>
+                    <button id="toggle-v3-btn" onclick="switchTopology('v3')" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                        <span class="material-icons text-sm">verified_user</span>
+                        <span>Phase 3: V3 Zero-Trust MCP</span>
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Interactive Diagram Area -->
-                <div class="lg:col-span-8 flex flex-col space-y-6 bg-slate-950 p-6 rounded-xl border border-slate-800">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Click components below to inspect details</span>
-                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> Active Schema</span>
-                    </div>
+                <!-- Diagram Dynamic Area -->
+                <div class="lg:col-span-8 flex flex-col space-y-6 bg-slate-950 p-6 rounded-xl border border-slate-800 relative">
                     
-                    <!-- Diagram Grid Zones -->
-                    <div class="space-y-8 select-none">
+                    <!-- Phase Indicator Badges inside map wrapper -->
+                    <div id="v1-header-badge" class="flex justify-between items-center text-xs text-yellow-400">
+                        <span class="flex items-center font-mono uppercase tracking-wider"><span class="w-2.5 h-2.5 rounded-full bg-yellow-500 mr-2 animate-pulse"></span> Active: V1 Legacy Single Docker Script</span>
+                        <span class="text-slate-500 text-[11px]">Uninsulated variables and absolute write permissions</span>
+                    </div>
+
+                    <div id="v2-header-badge" class="hidden justify-between items-center text-xs text-orange-400">
+                        <span class="flex items-center font-mono uppercase tracking-wider"><span class="w-2.5 h-2.5 rounded-full bg-orange-500 mr-2 animate-pulse"></span> Active: V2 Multi-Container Monolithic Flow</span>
+                        <span class="text-slate-500 text-[11px]">Streamlit, Node sync bridges, and shared SQL volumes</span>
+                    </div>
+
+                    <div id="v3-header-badge" class="hidden justify-between items-center text-xs text-blue-400">
+                        <span class="flex items-center font-mono uppercase tracking-wider"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2 animate-ping"></span> Active: V3 Isolated Zero-Trust MCP</span>
+                        <span class="text-slate-500 text-[11px]">Decoupled, validation zones & local replicas</span>
+                    </div>
+
+                    <!-- Diagram Grid: V1 TOPOLOGY -->
+                    <div id="topology-v1" class="space-y-8 select-none py-4">
+                        
+                        <!-- Zone: Simple Docker Scope -->
+                        <div class="border border-yellow-500/20 bg-yellow-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Isolated Standalone Docker Container Scope</span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
+                                <div onclick="inspectV1('raw_scraper')" id="node-raw_scraper" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-yellow-500">api</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Raw Python Script</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Single file handles request, credentials, parsing, and write commands</p>
+                                    <span class="absolute -top-1.5 -right-1.5 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-[8px] font-mono px-1 rounded">V1 SCRIPT</span>
+                                </div>
+                                <div onclick="inspectV1('v1_db')" id="node-v1_db" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-red-500">folder_zip</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Local SQLite file</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Directly modified on same runtime container volume</p>
+                                    <span class="absolute -top-1.5 -right-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[8px] font-mono px-1 rounded">UNINSULATED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Down -->
+                        <div class="text-center text-rose-500/70 text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2">
+                            <span>🚨 Single Injection Vector compromises whole container</span>
+                            <span class="material-icons text-xs">trending_down</span>
+                        </div>
+
+                        <!-- Zone: Simple CLI Context -->
+                        <div class="border border-red-500/20 bg-red-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">Client Console & CLI Scope</span>
+                            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 pt-6 items-center">
+                                <div onclick="inspectV1('v1_cli')" id="node-v1_cli" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-indigo-400">terminal</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Terminal Logging & CLI Output</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Displays unformatted script print metrics directly</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Diagram Grid: V2 TOPOLOGY -->
+                    <div id="topology-v2" class="hidden space-y-8 select-none py-4">
+                        
+                        <!-- Zone: Orchestrated Scrapers -->
+                        <div class="border border-orange-500/20 bg-orange-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-orange-400 uppercase tracking-widest">Distributed Containers (Docker-Compose Scope)</span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
+                                <div onclick="inspectV2('v2_sync_bridge')" id="node-v2_sync_bridge" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-orange-500">dns</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Sync Bridge & Backlog JS</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Sync_bridge.py / sync_backlog.js orchestrates network scraping</p>
+                                    <span class="absolute -top-1.5 -right-1.5 bg-orange-500/10 text-orange-400 border border-orange-500/20 text-[8px] font-mono px-1 rounded">V2 APP</span>
+                                </div>
+                                <div onclick="inspectV2('v2_db')" id="node-v2_db" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-red-500">storage</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Shared SQLite DB Container</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Central persistent volume with raw write access</p>
+                                    <span class="absolute -top-1.5 -right-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[8px] font-mono px-1 rounded">VULNERABLE</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Down -->
+                        <div class="text-center text-rose-500/70 text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2">
+                            <span>🚨 Prompt Injection compromise leads to full database writes</span>
+                            <span class="material-icons text-xs">trending_down</span>
+                        </div>
+
+                        <!-- Zone: Core UI Client Scope -->
+                        <div class="border border-red-500/20 bg-red-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">Dashboard & Client Interface Scope</span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 items-center">
+                                <div onclick="inspectV2('v2_streamlit')" id="node-v2_streamlit" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 transition rounded-lg text-center relative">
+                                    <span class="material-icons text-indigo-400">view_quilt</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Streamlit Dashboard Front</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Queries SQLite directly using python dataframes</p>
+                                </div>
+                                <div onclick="inspectV2('v2_llm')" id="node-v2_llm" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 transition rounded-lg text-center">
+                                    <span class="material-icons text-emerald-400">forum</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Direct Chat Handler</h4>
+                                    <p class="text-[9px] text-slate-400 mt-1">Uninsulated local LLM prompt templates</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Diagram Grid: V3 ISOLATED TOPOLOGY -->
+                    <div id="topology-v3" class="hidden space-y-8 select-none py-4">
                         
                         <!-- Zone: Untrusted -->
                         <div class="border border-red-500/20 bg-red-950/5 p-4 rounded-xl relative">
-                            <span class="absolute top-2 left-2 text-[10px] font-bold text-red-400 uppercase tracking-widest">Zone 1: Untrusted Internet</span>
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-red-400 uppercase tracking-widest">Zone 1: Untrusted Internet (MCP Servers)</span>
                             <div class="flex justify-around items-center pt-4 space-x-4">
-                                <div onclick="inspect('sly')" id="node-sly" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('sly')" id="node-sly" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-blue-400">vpn_lock</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Sly (PSN Ingest)</h4>
                                     <span class="text-[9px] text-blue-300 font-mono">MCP Server</span>
                                 </div>
                                 <div class="text-slate-600 font-bold">◄ ►</div>
-                                <div onclick="inspect('milo')" id="node-milo" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('milo')" id="node-milo" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-purple-400">explore</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Milo (Guide Scraper)</h4>
                                     <span class="text-[9px] text-purple-300 font-mono">MCP Server</span>
@@ -176,13 +313,13 @@
                         <div class="border border-orange-500/20 bg-orange-950/5 p-4 rounded-xl relative">
                             <span class="absolute top-2 left-2 text-[10px] font-bold text-orange-400 uppercase tracking-widest">Zone 2: Ingestion Admission Zone</span>
                             <div class="flex justify-around items-center pt-4 space-x-4">
-                                <div onclick="inspect('minos')" id="node-minos" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('minos')" id="node-minos" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-orange-400">clean_hands</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Minos (HTML Strip)</h4>
                                     <span class="text-[9px] text-slate-400 font-mono">Deterministic SLM</span>
                                 </div>
                                 <div class="text-slate-600 font-bold">►</div>
-                                <div onclick="inspect('rhadamanthys')" id="node-rhadamanthys" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('rhadamanthys')" id="node-rhadamanthys" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-amber-400">rule</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Rhadamanthys (Judge)</h4>
                                     <span class="text-[9px] text-slate-400 font-mono">Schema Guard</span>
@@ -197,17 +334,17 @@
                         <div class="border border-purple-500/20 bg-purple-950/5 p-4 rounded-xl relative">
                             <span class="absolute top-2 left-2 text-[10px] font-bold text-purple-400 uppercase tracking-widest">Zone 3: Chalcids Isolated Data Plane</span>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 items-center">
-                                <div onclick="inspect('vault')" id="node-vault" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                <div onclick="inspectV3('vault')" id="node-vault" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
                                     <span class="material-icons text-red-500">history_edu</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">The Vault</h4>
                                     <span class="text-[9px] text-red-400 font-mono">Immutable Ledger</span>
                                 </div>
-                                <div onclick="inspect('dewey')" id="node-dewey" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                <div onclick="inspectV3('dewey')" id="node-dewey" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
                                     <span class="material-icons text-purple-400">inventory</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Dewey (Master GW)</h4>
                                     <span class="text-[9px] text-purple-300 font-mono">Content Hash DB</span>
                                 </div>
-                                <div onclick="inspect('hermes')" id="node-hermes" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                <div onclick="inspectV3('hermes')" id="node-hermes" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
                                     <span class="material-icons text-green-400">swap_calls</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Hermes (Sync Diode)</h4>
                                     <span class="text-[9px] text-green-300 font-mono">Outbound Only</span>
@@ -220,15 +357,15 @@
 
                         <!-- Zone: User Sandbox -->
                         <div class="border border-emerald-500/20 bg-emerald-950/5 p-4 rounded-xl relative">
-                            <span class="absolute top-2 left-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Zone 4: User Sandbox Sandbox (Visible Space)</span>
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Zone 4: User Sandbox (Visible Space)</span>
                             <div class="flex justify-around items-center pt-4 space-x-4">
-                                <div onclick="inspect('thekeeper')" id="node-thekeeper" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('thekeeper')" id="node-thekeeper" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-emerald-400">dns</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">TheKeeper</h4>
                                     <span class="text-[9px] text-emerald-300 font-mono">Read SQLite Replica</span>
                                 </div>
                                 <div class="text-slate-600 font-bold">◄ ►</div>
-                                <div onclick="inspect('charon')" id="node-charon" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                <div onclick="inspectV3('charon')" id="node-charon" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
                                     <span class="material-icons text-indigo-400">forum</span>
                                     <h4 class="text-xs font-bold mt-1 text-slate-200">Charon (AI Orchestrator)</h4>
                                     <span class="text-[9px] text-indigo-300 font-mono">Local LLM Host</span>
@@ -245,23 +382,32 @@
                         <div class="space-y-4">
                             <div class="flex justify-between items-start border-b border-slate-800 pb-3">
                                 <div>
-                                    <span id="inspect-zone" class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Zone Information</span>
+                                    <span id="inspect-zone" class="text-[10px] font-bold uppercase tracking-widest text-yellow-500 font-mono">Phase Context</span>
                                     <h4 id="inspect-title" class="text-xl font-bold text-white mt-1">Select Component</h4>
                                 </div>
                                 <span id="inspect-icon" class="material-icons text-slate-500 text-3xl">help_outline</span>
                             </div>
                             <div class="text-slate-300 text-sm leading-relaxed space-y-3" id="inspect-desc">
-                                <p>Click on any of the architecture components inside the map to examine their parameters, isolation metrics, and system contracts.</p>
-                                <p class="text-xs text-slate-500">Every microservice is sandboxed securely to achieve dynamic verification before changes touch the database plane.</p>
+                                <p>Click on any of the active phase components to view credentials scopes, vulnerabilities, read/write permissions, and data flow properties.</p>
                             </div>
                         </div>
+                        
+                        <!-- Associated Repos dynamically parsed -->
+                        <div id="mapped-repos-indicator" class="mt-4 p-3 rounded-lg bg-slate-900 border border-slate-800 hidden">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Currently Linked Repository File</span>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="material-icons text-xs text-blue-400 font-mono">folder_shared</span>
+                                <span id="mapped-repo-name" class="text-xs text-white font-mono truncate">None linked</span>
+                            </div>
+                        </div>
+
                         <div class="pt-6 border-t border-slate-800 space-y-2 text-xs">
                             <div class="flex justify-between">
-                                <span class="text-slate-500">Access Policy:</span>
+                                <span class="text-slate-500">Access Channel:</span>
                                 <span id="inspect-access" class="font-mono text-slate-300">N/A</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-500">Target Protocol:</span>
+                                <span class="text-slate-500">Threat Vulnerability:</span>
                                 <span id="inspect-protocol" class="font-mono text-slate-300">N/A</span>
                             </div>
                         </div>
@@ -270,12 +416,13 @@
             </div>
         </section>
 
+        <!-- Ingestion Threat Simulator -->
         <section id="simulator" class="space-y-6">
             <div class="space-y-2">
-                <span class="text-xs font-bold tracking-widest text-red-400 uppercase font-mono">Live Ingestion Analysis</span>
-                <h3 class="text-2xl font-bold text-white">Ingestion Threat & Flow Simulator</h3>
+                <span class="text-xs font-bold tracking-widest text-red-400 uppercase font-mono">Real-Time Payload Verification</span>
+                <h3 class="text-2xl font-bold text-white">Interactive Threat & Flow Simulator</h3>
                 <p class="text-slate-400 text-sm max-w-3xl">
-                    Run simulated data requests through the Admission Council pipeline to see how prompt injections are detected and purged before reaching the master database.
+                    Execute standard operations or simulated payload injections against the active system mode to witness physical isolation properties in action.
                 </p>
             </div>
 
@@ -283,32 +430,32 @@
                 <!-- Control Panel -->
                 <div class="lg:col-span-4 bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
-                        <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide">Simulation Triggers</h4>
-                        <p class="text-xs text-slate-400">Trigger standard telemetry ingestion or a simulated adversarial exploit from the internet.</p>
+                        <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide">Simulated Ingest Channels</h4>
+                        <p class="text-xs text-slate-400">Run standard safe backlogs or mock SQL string exploits. The simulated trace logs adapt instantly to whichever topology tab is currently selected above.</p>
                         
                         <div class="space-y-3">
-                            <button onclick="triggerSim('standard')" class="w-full py-3 px-4 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition rounded-lg font-semibold text-sm text-blue-400 flex items-center justify-between">
-                                <span class="flex items-center"><span class="material-icons mr-2 text-sm">cloud_sync</span> Standard Ingest</span>
-                                <span class="material-icons text-xs">play_arrow</span>
+                            <button onclick="triggerSim('standard')" class="w-full py-3 px-4 bg-blue-650/10 border border-blue-500/20 hover:bg-blue-600/20 transition rounded-lg font-semibold text-sm text-blue-400 flex items-center justify-between">
+                                <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">cloud_sync</span> STANDARD SYNC</span>
+                                <span class="material-icons text-xs font-mono">play_arrow</span>
                             </button>
-                            <button onclick="triggerSim('threat')" class="w-full py-3 px-4 bg-red-600/10 border border-red-500/20 hover:bg-red-600/20 transition rounded-lg font-semibold text-sm text-red-400 flex items-center justify-between">
-                                <span class="flex items-center"><span class="material-icons mr-2 text-sm">gavel</span> Simulated Threat</span>
-                                <span class="material-icons text-xs">security</span>
+                            <button onclick="triggerSim('threat')" class="w-full py-3 px-4 bg-rose-600/10 border border-rose-500/20 hover:bg-rose-600/20 transition rounded-lg font-semibold text-sm text-rose-400 flex items-center justify-between">
+                                <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">gavel</span> INJECTION ATTACK</span>
+                                <span class="material-icons text-xs font-mono">security</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800/80 text-xs space-y-2">
                         <div class="flex justify-between font-mono">
-                            <span class="text-slate-500">Normalizer Output:</span>
+                            <span class="text-slate-500">Admitted Normalization:</span>
                             <span id="sim-normalizer-status" class="text-slate-400">Idle</span>
                         </div>
                         <div class="flex justify-between font-mono">
-                            <span class="text-slate-500">Admission Verdict:</span>
+                            <span class="text-slate-500">Ledger Compliance Audit:</span>
                             <span id="sim-admission-status" class="text-slate-400">Idle</span>
                         </div>
                         <div class="flex justify-between font-mono">
-                            <span class="text-slate-500">Atomic Replication:</span>
+                            <span class="text-slate-500">Replica State Isolation:</span>
                             <span id="sim-replication-status" class="text-slate-400">Idle</span>
                         </div>
                     </div>
@@ -325,18 +472,19 @@
                         <span class="mono text-xs text-slate-500">trace_observer.log</span>
                     </div>
                     <div id="sim-console" class="p-5 font-mono text-xs space-y-3 overflow-y-auto flex-grow bg-slate-950 text-slate-300">
-                        <div class="text-slate-500">// System ready. Click Ingest triggers to run simulation traces.</div>
+                        <div class="text-slate-500">// Terminal active. Toggle active architecture phase tabs above to test standard vs. hostile payload behaviors.</div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- Live Code Metric & Architecture Mapping Workspace -->
         <section id="github-hub" class="space-y-6">
             <div class="space-y-2">
-                <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Live Code Metrics</span>
-                <h3 class="text-2xl font-bold text-white">Dynamic Repository Workspace</h3>
+                <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Interactive Workspace</span>
+                <h3 class="text-2xl font-bold text-white">Live Codebase Architecture Matching</h3>
                 <p class="text-slate-400 text-sm max-w-3xl">
-                    By bypassing expensive premium builders, this site queries the public, unauthenticated **GitHub REST API** straight from your client's browser to display live project statistics. Enter any GitHub username to load their repositories dynamically.
+                    Query public archive repositories using the GitHub REST API, then link live files directly to our system components to map implementation gaps.
                 </p>
             </div>
 
@@ -351,98 +499,88 @@
                     </div>
                     <button onclick="fetchRepositories()" class="w-full sm:w-auto py-2 px-5 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-sm font-semibold text-white flex items-center justify-center space-x-2">
                         <span class="material-icons text-sm">sync</span>
-                        <span>Query Repositories</span>
+                        <span>Sync Codebase Repositories</span>
                     </button>
                 </div>
                 <div class="flex flex-wrap gap-2 items-center text-xs">
-                    <span class="text-slate-400">Quick-Switch Presets:</span>
+                    <span class="text-slate-400">Default Presets:</span>
                     <button onclick="setAndQueryPreset('HarpN')" class="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 hover:text-white transition mono flex items-center space-x-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                        <span>HarpN (Primary)</span>
+                        <span>HarpN (TheArchives)</span>
                     </button>
-                    <button onclick="setAndQueryPreset('modelcontextprotocol')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">modelcontextprotocol</button>
-                    <button onclick="setAndQueryPreset('lobehub')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">lobehub</button>
+                    <button onclick="setAndQueryPreset('lobehub')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">lobehub (MCP)</button>
                     <button onclick="setAndQueryPreset('DevNvll')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition mono">DevNvll</button>
                 </div>
             </div>
 
             <!-- Repository Cards Container -->
             <div id="repo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- JavaScript handles population here -->
-                <div class="text-center py-12 text-slate-500 col-span-full">
-                    Enter a GitHub handle above and click Query to retrieve live open-source project cards.
-                </div>
+                <!-- Populated Dynamically -->
             </div>
         </section>
 
-        <section id="engineering-blog" class="space-y-6">
-            <div class="space-y-2">
-                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architecture Notebook</span>
-                <h3 class="text-2xl font-bold text-white">Security-First Platform Blog</h3>
-                <p class="text-slate-400 text-sm max-w-3xl">
-                    Deep architectural essays and designs cataloging the engineering evolution of the Trophy Backlog Command Center.
-                </p>
+        <!-- Dynamic Blog CMS Section -->
+        <section id="cms-blog" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="space-y-2">
+                    <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architect local Notebook</span>
+                    <h3 class="text-2xl font-bold text-white">Migration Logs & Systems Journals</h3>
+                    <p class="text-slate-400 text-sm max-w-xl">
+                        Document and track transition requirements. Saved architectural journals are stored locally in the browser frame.
+                    </p>
+                </div>
+                <button onclick="toggleBlogEditor()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-xs font-bold inline-flex items-center space-x-2">
+                    <span class="material-icons text-sm">create</span>
+                    <span>Write Architecture Log</span>
+                </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Blog Article 1 -->
-                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
-                    <div class="p-6 space-y-4">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono">Part I: Defending Sandbox</span>
-                        <h4 class="text-lg font-bold text-white">Containing LLM Blast Radii with TheKeeper Sandbox</h4>
-                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
-                            Direct AI interactions with master databases introduce deep injection paths. Explore how wrapping read replicas inside isolated client nodes shields core state files.
-                        </p>
-                    </div>
-                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
-                        <span class="text-slate-500">6 min read</span>
-                        <button onclick="showArticle(1)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
-                            <span>Read Article</span>
-                            <span class="material-icons text-sm ml-1">arrow_forward</span>
-                        </button>
-                    </div>
-                </article>
+            <!-- CMS Interactive Dynamic Form Editor (Hidden by default) -->
+            <div id="blog-editor-form" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h4 id="editor-form-title" class="text-base font-bold text-white">Publish New Entry</h4>
+                    <button onclick="toggleBlogEditor()" class="text-slate-400 hover:text-white transition"><span class="material-icons text-sm">close</span></button>
+                </div>
+                
+                <input type="hidden" id="edit-post-id" value="">
 
-                <!-- Blog Article 2 -->
-                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
-                    <div class="p-6 space-y-4">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-purple-400 font-mono">Part II: MCP Servers</span>
-                        <h4 class="text-lg font-bold text-white">Translating Scrapes to MCP-Enabled Micro-Agents</h4>
-                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
-                            Monolithic scrapers present complex point-to-point issues. Learn how Sly and Milo leverage Model Context Protocol servers to establish isolated telemetry domain experts.
-                        </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Migration Phase</label>
+                        <select id="post-category" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono">
+                            <option value="Phase 1: V1 Refactoring">Phase 1: V1 Refactoring</option>
+                            <option value="Phase 2: V2 Docker Orchestration">Phase 2: V2 Docker Orchestration</option>
+                            <option value="Phase 3: V3 Zero-Trust Target">Phase 3: V3 Zero-Trust Target</option>
+                            <option value="Vulnerability Log">Vulnerability Log</option>
+                            <option value="Security Architecture">Security Architecture</option>
+                        </select>
                     </div>
-                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
-                        <span class="text-slate-500">8 min read</span>
-                        <button onclick="showArticle(2)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
-                            <span>Read Article</span>
-                            <span class="material-icons text-sm ml-1">arrow_forward</span>
-                        </button>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Journal Title</label>
+                        <input type="text" id="post-title" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. Decoupling sync_backlog.js to isolated nodes">
                     </div>
-                </article>
+                </div>
 
-                <!-- Blog Article 3 -->
-                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
-                    <div class="p-6 space-y-4">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400 font-mono">Part III: Ledgers</span>
-                        <h4 class="text-lg font-bold text-white">The Ingestion Council & Content-Addressed DB Deltas</h4>
-                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
-                            What happens when malicious third parties inject strings inside public guides? Discover the validation protocols of Minos and Rhadamanthys.
-                        </p>
-                    </div>
-                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
-                        <span class="text-slate-500">10 min read</span>
-                        <button onclick="showArticle(3)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
-                            <span>Read Article</span>
-                            <span class="material-icons text-sm ml-1">arrow_forward</span>
-                        </button>
-                    </div>
-                </article>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Content Markdown/HTML</label>
+                    <textarea id="post-content" rows="6" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" placeholder="Write journal notes here..."></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button onclick="toggleBlogEditor()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition text-xs font-bold text-slate-400">Cancel</button>
+                    <button id="save-post-btn" onclick="saveBlogPost()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition text-xs font-bold text-white">Commit Journal</button>
+                </div>
+            </div>
+
+            <!-- Blog Output Grid -->
+            <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Managed Dynamically by JS Engine -->
             </div>
         </section>
 
     </main>
 
+    <!-- Blog Detail modal -->
     <div id="article-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-3xl w-full max-h-[80vh] flex flex-col justify-between overflow-hidden shadow-2xl">
             <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
@@ -467,111 +605,361 @@
 
     <footer class="border-t border-slate-800 bg-slate-950 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500">
-            <p>© 2026 Trophy Backlog Command Center. Configured dynamically with live GitHub profiles.</p>
+            <p>© 2026 Trophy Backlog Command Center. Configured for V1, V2 and V3 models.</p>
             <div class="flex space-x-6 mt-4 md:mt-0">
-                <span class="hover:text-slate-300 transition cursor-pointer">Protocol Standard</span>
-                <span class="hover:text-slate-300 transition cursor-pointer">Security Ledger</span>
-                <span class="hover:text-slate-300 transition cursor-pointer">Local Replica Docs</span>
+                <span class="hover:text-slate-300 transition cursor-pointer" onclick="clearBlogMemory()">Reset Local Logs</span>
+                <span class="hover:text-slate-300 transition cursor-pointer font-mono">V3.5.0-STAGE</span>
             </div>
         </div>
     </footer>
 
     <script>
-        const components = {
+        // Track the user-mapped relationships between real-world repositories and our architecture diagram nodes
+        let repositoryAssociations = JSON.parse(localStorage.getItem('repo_associations_v2')) || {};
+
+        // Track Active Topology Phase (v1, v2, v3)
+        let activeTopology = "v2";
+
+        // Preloaded Phase 1 Specifications (Single python script in standalone Docker)
+        const v1Components = {
+            raw_scraper: {
+                title: "V1 Raw Python Scraper (Docker)",
+                zone: "Standalone Runtime Container",
+                desc: "<p>The baseline phase of the codebase. A singular script running in a standalone Docker environment. Pulls PSN API data directly, scrapes guides, parsing credentials synchronously in the primary container shell.</p><p class='text-yellow-400 font-medium'>🔑 Vulnerability: Credential leak or parser manipulation allows threat payloads to compromise the primary host system.</p>",
+                access: "Direct access to environmental runtime secrets",
+                protocol: "High Risk (Uninsulated Script)"
+            },
+            v1_db: {
+                title: "V1 Direct SQLite Database File",
+                zone: "Standalone Runtime Container",
+                desc: "<p>The SQL database lives directly inside the single scraper container volume. All script operations read and write to this file without connection pools or replication layers.</p><p class='text-red-400 font-bold'>⚠️ Danger: Lacks encryption or write locks. String queries run as raw statements, introducing immediate SQL injection risks.</p>",
+                access: "Direct raw read/write from local script engine",
+                protocol: "Critical Security Gap"
+            },
+            v1_cli: {
+                title: "Local Terminal Logger & CLI Output",
+                zone: "CLI Command Context",
+                desc: "<p>Outputs stdout and raw trace details directly to terminal buffers. No remote diagnostic, caching pipelines, or logging structures are configured.</p>",
+                access: "Container standard output streaming",
+                protocol: "Basic Debug Level"
+            }
+        };
+
+        // Preloaded Phase 2 Specifications (Multi-container architecture with Streamlit, sync bridge, SQLite container)
+        const v2Components = {
+            v2_sync_bridge: {
+                title: "V2 Sync Bridge & Node Scraper Bridge",
+                zone: "Docker-Compose Service Plane",
+                desc: "<p>Represents the current architecture (Sync_bridge.py / sync_backlog.js). Combines multiple scripts to pull from APIs and serialize backlog arrays into intermediate staging structures.</p><p class='text-orange-400'>🛡️ Improvement: Decouples pure data scraping from UI runtime, although containers share the default docker-compose network directly.</p>",
+                access: "Volume shared network storage mapping",
+                protocol: "Medium Risk (Network Shared Core)"
+            },
+            v2_db: {
+                title: "V2 Orchestrated Database Volume",
+                zone: "Docker-Compose Service Plane",
+                desc: "<p>Orchestrated SQLite file mapped across containers. Separates direct script execution scopes but is still subject to direct shared volume manipulations.</p>",
+                access: "Shared read/write volume permissions",
+                protocol: "Vulnerable to Host Contamination"
+            },
+            v2_streamlit: {
+                title: "V2 Streamlit Dashboard Application",
+                zone: "Orchestrated Front Plane",
+                desc: "<p>The user interface constructed via Streamlit (dashboard.py) that queries database files directly to display trophy dataframes, graphs, and backlog progress metrics.</p>",
+                access: "Read-heavy direct SQL connection",
+                protocol: "Normal UI Scope"
+            },
+            v2_llm: {
+                title: "V2 LLM Direct Agent Pipeline",
+                zone: "Orchestrated Front Plane",
+                desc: "<p>Processes user chat prompts. Queries the shared SQLite volume directly to fetch context. Prompt modifications run without safety checks, leaving the core database vulnerable to manipulation if injection occurs.</p>",
+                access: "Shared Read Access over Master Database",
+                protocol: "Lacks LLM Query Insulator"
+            }
+        };
+
+        // Proposed Target V3 Isolation Specifications
+        const componentsV3 = {
             sly: {
                 title: "Sly (PlayStation Network Ingestion)",
                 zone: "Zone 1: Untrusted Internet",
                 desc: "<p>Named after PlayStation’s master thief, Sly runs as a decoupled MCP server on a strictly controlled interval schema to monitor PSN rate limits.</p><p>Its single task is extracting raw user telemetry, translating the payloads into clean, deterministic formats, and immediately presenting these updates as standard MCP Tool outputs.</p>",
                 access: "Read-Only (External Access)",
-                protocol: "PSN Web API / HTTPS"
+                protocol: "Secure Contract (Isolates Scrapes)"
             },
             milo: {
                 title: "Milo (Web Guide Scraper)",
                 zone: "Zone 1: Untrusted Internet",
                 desc: "<p>Named after Atlantis's expert translator, Milo handles the complex scraping of external trophy guides (e.g., PSNProfiles) to establish RAG context chains.</p><p>Because web scrapers represent critical endpoints vulnerable to indirect prompt injection payloads, Milo runs fully isolated behind the Admission Council.</p>",
                 access: "Read-Only (External Access)",
-                protocol: "Web Crawler / HTML Parser"
+                protocol: "Secure Contract (Isolates Scrapes)"
             },
             minos: {
                 title: "Minos (Data Normalizer)",
                 zone: "Zone 2: Ingestion Admission Zone",
                 desc: "<p>Minos acts as the first line of database protection inside the admission zone. It receives raw guide data directly from Milo.</p><p>By combining rigorous regex parsers with a tiny, unprivileged, local, deterministic SLM, Minos strips all web noise, formatting anomalies, and hidden executable scripts.</p>",
                 access: "Internal Ingestion Port Only",
-                protocol: "Unprivileged Local SLM"
+                protocol: "Isolated (Strip Engine)"
             },
             rhadamanthys: {
                 title: "Rhadamanthys (Data Judge)",
                 zone: "Zone 2: Ingestion Admission Zone",
                 desc: "<p>The ultimate validator of incoming database changes. Rhadamanthys inspects the normalized output provided by Minos.</p><p>It runs checks against explicit constraints (e.g., matching strict platform enums). If a payload shows traces of prompt injection, Rhadamanthys raises a flag, halts ingestion, and blocks the write route.</p>",
                 access: "Data Judge Port Only",
-                protocol: "Strict Structural Engine"
+                protocol: "Highly Guarded Admission Gate"
             },
             vault: {
                 title: "The Vault (Immutable Recovery Ledger)",
                 zone: "Zone 3: Chalcids Isolated Data Plane",
                 desc: "<p>The Vault is an air-gapped, append-only volume containing a cryptographically chained ledger file. When Rhadamanthys approves a clean update, the transaction is logged here.</p><p>If a downstream corruption ever hits the active database, the system can rebuild a perfect, verified state by replaying Vault history.</p>",
                 access: "Write-Only (Rhadamanthys) / Read-Only (Dewey)",
-                protocol: "Append-Only File Volume"
+                protocol: "Immutable Append-Only Ledger"
             },
             dewey: {
                 title: "Dewey (Master Write-Gateway)",
                 zone: "Zone 3: Chalcids Isolated Data Plane",
                 desc: "<p>Dewey is the sole write gate for the master SQLite database. Dewey reads updates exclusively from the Vault ledger file.</p><p>Dewey implements atomic, content-addressable deduplication. Instead of writing heavy duplicate entries, it tracks changes via SHA-256 content hashes, enabling surgical rollbacks.</p>",
                 access: "Read Vault Ledger Only",
-                protocol: "Content-Addressed SQLite Controller"
+                protocol: "Protected Core Writes"
             },
             hermes: {
                 title: "Hermes (Synchronization Diode)",
                 zone: "Zone 3: Chalcids Isolated Data Plane",
                 desc: "<p>Hermes acts as the one-way network gate protecting the data plane from the client visible zone. It has zero knowledge of the master database or the Vault.</p><p>When Dewey outputs a local delta updates file, Hermes detects the update, packages the change into compressed stream packets, and pushes it outbound to TheKeeper.</p>",
                 access: "Read Local Replica Snapshots",
-                protocol: "File Event (Inotify) / Outbound Socket Stream"
+                protocol: "One-Way Synchronization"
             },
             thekeeper: {
                 title: "TheKeeper (User Read Replica)",
                 zone: "Zone 4: User Sandbox (Visible Space)",
                 desc: "<p>TheKeeper serves as Charon's isolated data universe. It holds a local read-replica SQLite file representing the state of the master platform.</p><p>If an attacker tricks Charon with an injection attack, the exploit can only corrupt TheKeeper's local file. The master data plane remains fully isolated and secure.</p>",
                 access: "Read-Only (Charon / User Interface)",
-                protocol: "Local Sandbox SQLite File"
+                protocol: "Zero-Trust Replica Boundary"
             },
             charon: {
                 title: "Charon (AI Command Client)",
                 zone: "Zone 4: User Sandbox (Visible Space)",
                 desc: "<p>Charon is the local LLM-powered orchestrator. It handles natural language commands from the user to help them plan, track, and optimize trophy runs.</p><p>Charon consumes tools exposed by local MCP servers but only interacts with database data from TheKeeper, preventing exposure of backend settings.</p>",
                 access: "Read TheKeeper / Consume MCP Tools",
-                protocol: "Local Model Context Client"
+                protocol: "Secure Client Environment"
             }
         };
 
-        function inspect(componentKey) {
-            const data = components[componentKey];
+        // Static Default Articles for First Boot CMS load
+        const defaultBlogPosts = [
+            {
+                id: "post_1",
+                category: "Phase 1: V1 Refactoring",
+                title: "Deconstructing V1 Monolithic Scraper Python Scripts",
+                content: `
+                    <p>In Phase 1 (V1), our script run was entirely contained in a single standalone Docker environment. While simple, pulling API endpoints, checking credentials, parsing data, and committing changes inside a single script run creates critical single points of failure.</p>
+                    <p><strong>The Operational Threat:</strong></p>
+                    <p>If an API returns hostile values, or a user modifies database credentials in the environmental config, the entire execution shell is vulnerable to full host takeovers. Our path forward requires first separating visual display from synchronization logic.</p>
+                `,
+                date: "2026-07-10 14:30"
+            },
+            {
+                id: "post_2",
+                category: "Phase 2: V2 Docker Orchestration",
+                title: "Decoupling Storage and Frontend with Docker-Compose",
+                content: `
+                    <p>In Phase 2 (V2), we isolated our system components into orchestrated multi-container deployments. The Streamlit dashboard runs in its own UI container, communicating with python data structures, while node sync-bridges write database streams directly to SQLite mounts.</p>
+                    <p><strong>Remaining Exposure:</strong></p>
+                    <p>Even though containers run on dedicated service planes, they continue to map the central uninsulated database volume directly. A database query injection parsed via scraping threads can still compromise core data integrity.</p>
+                `,
+                date: "2026-07-11 11:20"
+            },
+            {
+                id: "post_3",
+                category: "Phase 3: V3 Zero-Trust Target",
+                title: "Securing Data Admissions with MCP and Rhadamanthys",
+                content: `
+                    <p>Phase 3 (V3) transitions our platform to decoupled Model Context Protocol (MCP) servers and Zero-Trust zones.</p>
+                    <p><strong>The Admission Loop:</strong></p>
+                    <p>Instead of direct writes, scraped backlogs are normalized by Minos and strictly validated by the Rhadamanthys admission judge. Valid transactions write solely to an append-only, immutable recovery ledger (The Vault). From there, changes propagate outbound to sandboxed local replicas (TheKeeper) for local user interaction, preventing core security incidents from impacting persistent master storage.</p>
+                `,
+                date: "2026-07-12 09:15"
+            }
+        ];
+
+        // Toast notifications helper to prevent raw alert usage
+        function showToast(message, type = 'success') {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            
+            let colorClass = "bg-blue-950 border-blue-500 text-blue-200";
+            if (type === 'error') colorClass = "bg-rose-950 border-rose-500 text-rose-200";
+            if (type === 'warning') colorClass = "bg-amber-950 border-amber-500 text-amber-200";
+
+            toast.className = `p-3 rounded-lg border flex items-center justify-between shadow-2xl transition duration-300 font-mono text-xs w-72 ${colorClass}`;
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="text-xs ml-2 opacity-50 hover:opacity-100">✕</button>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add("opacity-0");
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Evolution View Toggle logic
+        function switchTopology(phase) {
+            activeTopology = phase;
+            const v1Btn = document.getElementById("toggle-v1-btn");
+            const v2Btn = document.getElementById("toggle-v2-btn");
+            const v3Btn = document.getElementById("toggle-v3-btn");
+
+            const v1Grid = document.getElementById("topology-v1");
+            const v2Grid = document.getElementById("topology-v2");
+            const v3Grid = document.getElementById("topology-v3");
+
+            const v1Badge = document.getElementById("v1-header-badge");
+            const v2Badge = document.getElementById("v2-header-badge");
+            const v3Badge = document.getElementById("v3-header-badge");
+
+            // Reset buttons
+            v1Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+            v2Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+            v3Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+
+            // Hide grids & badges
+            v1Grid.classList.add("hidden");
+            v2Grid.classList.add("hidden");
+            v3Grid.classList.add("hidden");
+            v1Badge.classList.add("hidden");
+            v2Badge.classList.add("hidden");
+            v3Badge.classList.add("hidden");
+
+            if (phase === "v1") {
+                v1Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-yellow-500/10 text-yellow-400 border border-yellow-500/30";
+                v1Grid.classList.remove("hidden");
+                v1Badge.classList.remove("hidden");
+                v1Badge.classList.add("flex");
+                inspectV1('raw_scraper');
+                showToast("Viewing Phase 1: V1 Standalone Docker Script.", "warning");
+            } else if (phase === "v2") {
+                v2Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-orange-500/10 text-orange-400 border border-orange-500/30";
+                v2Grid.classList.remove("hidden");
+                v2Badge.classList.remove("hidden");
+                v2Badge.classList.add("flex");
+                inspectV2('v2_sync_bridge');
+                showToast("Viewing Phase 2: V2 Orchestrated Multi-Container App.");
+            } else {
+                v3Btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/30";
+                v3Grid.classList.remove("hidden");
+                v3Badge.classList.remove("hidden");
+                v3Badge.classList.add("flex");
+                inspectV3('charon');
+                showToast("Viewing Phase 3: V3 Target Zero-Trust Architecture.", "success");
+            }
+        }
+
+        // Inspector logic for V1 Nodes
+        function inspectV1(nodeKey) {
+            const data = v1Components[nodeKey];
             if (!data) return;
 
-            // Highlight Node Visually
             document.querySelectorAll("[id^='node-']").forEach(node => {
-                node.className = "cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]";
+                node.classList.remove("active-gold", "active-orange", "active-blue", "active-red", "bg-slate-950", "border-yellow-500", "border-orange-500", "border-blue-500");
+                node.classList.add("bg-slate-900", "border-slate-700");
             });
-            const activeNode = document.getElementById(`node-${componentKey}`);
+
+            const activeNode = document.getElementById(`node-${nodeKey}`);
             if (activeNode) {
-                activeNode.className = "cursor-pointer p-3 bg-slate-950 border transition rounded-lg text-center w-full max-w-[180px] active-blue";
+                activeNode.classList.remove("bg-slate-900", "border-slate-700");
+                activeNode.classList.add("bg-slate-950", "border-yellow-500", "active-gold");
             }
 
-            // Populate Inspector Card Info
             document.getElementById("inspect-zone").innerText = data.zone;
+            document.getElementById("inspect-zone").className = "text-[10px] font-bold uppercase tracking-widest text-yellow-500 font-mono";
+            document.getElementById("inspect-title").innerText = data.title;
+            document.getElementById("inspect-desc").innerHTML = data.desc;
+            document.getElementById("inspect-access").innerText = data.access;
+            document.getElementById("inspect-protocol").innerText = data.protocol;
+            document.getElementById("inspect-icon").innerText = "code";
+            document.getElementById("inspect-icon").className = "material-icons text-yellow-500 text-3xl";
+
+            displayLinkedRepo(nodeKey);
+        }
+
+        // Inspector logic for V2 Nodes
+        function inspectV2(nodeKey) {
+            const data = v2Components[nodeKey];
+            if (!data) return;
+
+            document.querySelectorAll("[id^='node-']").forEach(node => {
+                node.classList.remove("active-gold", "active-orange", "active-blue", "active-red", "bg-slate-950", "border-yellow-500", "border-orange-500", "border-blue-500");
+                node.classList.add("bg-slate-900", "border-slate-700");
+            });
+
+            const activeNode = document.getElementById(`node-${nodeKey}`);
+            if (activeNode) {
+                activeNode.classList.remove("bg-slate-900", "border-slate-700");
+                activeNode.classList.add("bg-slate-950", "border-orange-500", "active-orange");
+            }
+
+            document.getElementById("inspect-zone").innerText = data.zone;
+            document.getElementById("inspect-zone").className = "text-[10px] font-bold uppercase tracking-widest text-orange-500 font-mono";
+            document.getElementById("inspect-title").innerText = data.title;
+            document.getElementById("inspect-desc").innerHTML = data.desc;
+            document.getElementById("inspect-access").innerText = data.access;
+            document.getElementById("inspect-protocol").innerText = data.protocol;
+            document.getElementById("inspect-icon").innerText = "widgets";
+            document.getElementById("inspect-icon").className = "material-icons text-orange-500 text-3xl";
+
+            displayLinkedRepo(nodeKey);
+        }
+
+        // Inspector logic for V3 Nodes
+        function inspectV3(nodeKey) {
+            const data = componentsV3[nodeKey];
+            if (!data) return;
+
+            document.querySelectorAll("[id^='node-']").forEach(node => {
+                node.classList.remove("active-gold", "active-orange", "active-blue", "active-red", "bg-slate-950", "border-yellow-500", "border-orange-500", "border-blue-500");
+                node.classList.add("bg-slate-900", "border-slate-700");
+            });
+
+            const activeNode = document.getElementById(`node-${nodeKey}`);
+            if (activeNode) {
+                activeNode.classList.remove("bg-slate-900", "border-slate-700");
+                activeNode.classList.add("bg-slate-950", "border-blue-500", "active-blue");
+            }
+
+            document.getElementById("inspect-zone").innerText = data.zone;
+            document.getElementById("inspect-zone").className = "text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono";
             document.getElementById("inspect-title").innerText = data.title;
             document.getElementById("inspect-desc").innerHTML = data.desc;
             document.getElementById("inspect-access").innerText = data.access;
             document.getElementById("inspect-protocol").innerText = data.protocol;
             
-            // Set Icon
             const iconMap = {
                 sly: "vpn_lock", milo: "explore", minos: "clean_hands",
                 rhadamanthys: "rule", vault: "history_edu", dewey: "inventory",
                 hermes: "swap_calls", thekeeper: "dns", charon: "forum"
             };
-            document.getElementById("inspect-icon").innerText = iconMap[componentKey] || "help_outline";
+            document.getElementById("inspect-icon").innerText = iconMap[nodeKey] || "help_outline";
+            document.getElementById("inspect-icon").className = "material-icons text-blue-500 text-3xl";
+
+            displayLinkedRepo(nodeKey);
         }
 
+        // Check and display the dynamic linked code repo if assigned by client
+        function displayLinkedRepo(componentKey) {
+            const indicator = document.getElementById("mapped-repos-indicator");
+            const nameEl = document.getElementById("mapped-repo-name");
+            
+            const associatedRepo = repositoryAssociations[componentKey];
+            if (associatedRepo) {
+                indicator.classList.remove("hidden");
+                nameEl.innerText = associatedRepo;
+            } else {
+                indicator.classList.add("hidden");
+            }
+        }
+
+        // Simulated Threat Stream Logic (Adapts based on current view tab)
         const consoleEl = document.getElementById("sim-console");
 
         function logToConsole(message, type = 'info') {
@@ -590,103 +978,165 @@
             consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
-        function triggerSim(mode) {
-            consoleEl.innerHTML = ""; // Clear existing logs
-            logToConsole(`Initializing Target Simulation Chain: ${mode.toUpperCase()}`, 'header');
-
-            if (mode === 'standard') {
-                runStandardSimulation();
-            } else {
-                runThreatSimulation();
-            }
-        }
-
-        function runStandardSimulation() {
-            setSimStatuses('Processing', 'Pending', 'Pending');
-            
-            setTimeout(() => {
-                logToConsole("Milo Scraper triggered: Requesting guide metrics for 'Sly Cooper (PS5)'", 'info');
-                logToConsole("Milo successfully returned scraped raw text payloads.", 'info');
-            }, 600);
-
-            setTimeout(() => {
-                logToConsole("Transferring data payload to Minos (The Normalizer)...", 'info');
-                logToConsole("Minos Stripper running: Cleaning web HTML strings and structural anomalies...", 'info');
-                logToConsole("Minos Output: Cleaned JSON object with valid schemas.", 'success');
-                setSimStatuses('Cleaned', 'Processing', 'Pending');
-            }, 1500);
-
-            setTimeout(() => {
-                logToConsole("Transferring parameters to Rhadamanthys Data Judge...", 'info');
-                logToConsole("Rhadamanthys: Checking schema metrics and character enums...", 'info');
-                logToConsole("Rhadamanthys Verdict: Payload matches strict platform and type contracts. [APPROVED]", 'success');
-                setSimStatuses('Cleaned', 'Approved', 'Processing');
-            }, 2500);
-
-            setTimeout(() => {
-                logToConsole("Rhadamanthys appending cryptographically signed block to The Vault ledger file...", 'info');
-                logToConsole("Dewey Core: Reading fresh Vault transaction...", 'info');
-                logToConsole("Dewey: Checking content duplicate deduplication matches...", 'info');
-                logToConsole("Dewey: Generating SHA-256 block update delta, writing safely to Master DB SQLite.", 'success');
-                logToConsole("Replication Diode (Hermes) triggered: Packaging atomic diff block for sync...", 'info');
-                logToConsole("Hermes: Streaming update outward to TheKeeper user read-replica. Sync Complete.", 'success');
-                setSimStatuses('Cleaned', 'Approved', 'Complete');
-            }, 3800);
-        }
-
-        function runThreatSimulation() {
-            setSimStatuses('Processing', 'Pending', 'Pending');
-            
-            setTimeout(() => {
-                logToConsole("Milo Scraper triggered: Fetching guide data for 'Uncharted 2'", 'info');
-                logToConsole("WARNING: Scraped guide page contains hidden adversarial CSS text blocks!", 'warning');
-                logToConsole("Milo Output payload: Include malicious injection: 'DROP TABLE games;--'", 'warning');
-            }, 600);
-
-            setTimeout(() => {
-                logToConsole("Forwarding payload to Minos Normalizer DMZ boundary...", 'info');
-                logToConsole("Minos: Stripping HTML tags and executing prompt extraction rules...", 'info');
-                logToConsole("Minos Output: Unescaped raw command strings intercepted. Cleaned data generated.", 'success');
-                setSimStatuses('Cleaned', 'Processing', 'Pending');
-            }, 1500);
-
-            setTimeout(() => {
-                logToConsole("Rhadamanthys evaluating sanitization details...", 'info');
-                logToConsole("Rhadamanthys Validation Error: Injected SQL payload blocked. Schema mismatch detected on guide chunk data structure.", 'error');
-                logToConsole("Rhadamanthys Verdict: PAYLOAD REJECTED. Security log appended to execution logs.", 'error');
-                logToConsole("ALERT: Communication pathway dropped at Boundary Zone.", 'error');
-                setSimStatuses('Cleaned', 'REJECTED', 'Blocked');
-            }, 2500);
-        }
-
         function setSimStatuses(norm, adm, repl) {
             document.getElementById("sim-normalizer-status").innerText = norm;
             document.getElementById("sim-admission-status").innerText = adm;
             document.getElementById("sim-replication-status").innerText = repl;
         }
 
+        function triggerSim(mode) {
+            consoleEl.innerHTML = ""; // Reset Console
+            logToConsole(`STARTING SIMULATOR IN "${activeTopology.toUpperCase()}" PIPELINE MODE`, "header");
+            
+            if (activeTopology === "v1") {
+                runV1Simulation(mode);
+            } else if (activeTopology === "v2") {
+                runV2Simulation(mode);
+            } else {
+                runV3Simulation(mode);
+            }
+        }
+
+        // Explaining security risks in V1 pipeline
+        function runV1Simulation(mode) {
+            setSimStatuses('Direct Access', 'Direct SQL', 'None (Shared Volume)');
+
+            if (mode === 'standard') {
+                setTimeout(() => {
+                    logToConsole("V1 standalone.py container execution started...", "warning");
+                    logToConsole("Standard request payload parsed: {auth: 'TokenA', api_query: 'backlog_fetch'}", "info");
+                }, 600);
+                setTimeout(() => {
+                    logToConsole("Direct database local path call: updating local SQLite file directly...", "info");
+                    logToConsole("SUCCESS: Backlog successfully refreshed on host filesystem.", "success");
+                    setSimStatuses('Direct Bypass', 'Written Directly', 'Uninsulated');
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    logToConsole("V1 standalone.py processing parsed external responses...", "warning");
+                    logToConsole("ALERT: Payload includes inline command injections: 'test; rm -rf /data/backlog.db;--'", "error");
+                }, 600);
+                setTimeout(() => {
+                    logToConsole("Direct connection bypasses sanitation boundaries...", "error");
+                    logToConsole("CRITICAL EXPLOIT: Database structure wiped out by unparameterized write execution!", "error");
+                    logToConsole("Host system files compromised.", "error");
+                    setSimStatuses('Bypassed', 'WIPED OUT', 'None');
+                    showToast("V1 container compromised! Local SQLite deleted.", "error");
+                }, 1800);
+            }
+        }
+
+        // Explaining security risks in V2 pipeline
+        function runV2Simulation(mode) {
+            setSimStatuses('Bypassed', 'Unfiltered write', 'Shared Storage');
+
+            if (mode === 'standard') {
+                setTimeout(() => {
+                    logToConsole("V2 Sync Bridge: Node background daemon running 'sync_backlog.js'...", "warning");
+                    logToConsole("Node thread staging raw payloads...", "info");
+                }, 600);
+                setTimeout(() => {
+                    logToConsole("Streamlit interface dashboard.py requesting SQLite shared volume data...", "info");
+                    logToConsole("Data retrieved and visual dataframes updated.", "success");
+                    setSimStatuses('Bypassed', 'Shared Write', 'Staged');
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    logToConsole("V2 Sync Bridge reading web profiles comments...", "warning");
+                    logToConsole("Scraped comment contains SQL statement manipulation: 'TrophyRun; UPDATE games SET title='hacked';--'", "warning");
+                }, 600);
+                setTimeout(() => {
+                    logToConsole("Writing scraped comment payload directly to shared SQLite volume mount...", "error");
+                    logToConsole("SQL Query Executed. Table state manipulated across containers.", "error");
+                    logToConsole("Streamlit Frontend displays corrupt data content.", "error");
+                    setSimStatuses('Bypassed', 'Contaminated write', 'Leaked to Front-End');
+                    showToast("V2 App Vulnerability confirmed! Shared database altered.", "error");
+                }, 1800);
+            }
+        }
+
+        // Safe, quarantined V3 target flow
+        function runV3Simulation(mode) {
+            setSimStatuses('Processing', 'Pending', 'Pending');
+
+            if (mode === 'standard') {
+                setTimeout(() => {
+                    logToConsole("Milo Scraper triggered: Web request guide for 'Sly Cooper (PS5)'", 'info');
+                    logToConsole("Milo successfully returned scraped raw text payloads to Zone 1.", 'info');
+                }, 600);
+
+                setTimeout(() => {
+                    logToConsole("Transferring data payload to Minos Normalizer (Zone 2)...", 'info');
+                    logToConsole("Minos Stripper running: Cleaning web HTML strings and structural anomalies...", 'info');
+                    logToConsole("Minos Output: Cleaned JSON object with valid schemas.", 'success');
+                    setSimStatuses('Cleaned', 'Processing', 'Pending');
+                }, 1500);
+
+                setTimeout(() => {
+                    logToConsole("Transferring parameters to Rhadamanthys Data Judge...", 'info');
+                    logToConsole("Rhadamanthys: Checking schema metrics and character enums...", 'info');
+                    logToConsole("Rhadamanthys Verdict: Payload matches strict platform and type contracts. [APPROVED]", 'success');
+                    setSimStatuses('Cleaned', 'Approved', 'Processing');
+                }, 2500);
+
+                setTimeout(() => {
+                    logToConsole("Rhadamanthys appending cryptographically signed block to The Vault ledger file (Zone 3)...", 'info');
+                    logToConsole("Dewey Core: Reading fresh Vault transaction...", 'info');
+                    logToConsole("Dewey: Checking content duplicate deduplication matches...", 'info');
+                    logToConsole("Dewey: Generating SHA-256 block update delta, writing safely to Master DB SQLite.", 'success');
+                    logToConsole("Replication Diode (Hermes) triggered: Packaging atomic diff block for sync...", 'info');
+                    logToConsole("Hermes: Streaming update outward to TheKeeper user read-replica. Sync Complete.", 'success');
+                    setSimStatuses('Cleaned', 'Approved', 'Complete');
+                    showToast("Telemetry synced successfully in secure V3 Mode.");
+                }, 3800);
+            } else {
+                setTimeout(() => {
+                    logToConsole("Milo Scraper triggered: Fetching guide data for 'Uncharted 2'", 'info');
+                    logToConsole("WARNING: Scraped guide page contains hidden adversarial CSS text blocks!", 'warning');
+                    logToConsole("Milo Output payload: Include malicious injection: 'DROP TABLE games;--'", 'warning');
+                }, 600);
+
+                setTimeout(() => {
+                    logToConsole("Forwarding payload to Minos Normalizer DMZ boundary...", 'info');
+                    logToConsole("Minos: Stripping HTML tags and executing prompt extraction rules...", 'info');
+                    logToConsole("Minos Output: Unescaped raw command strings intercepted. Cleaned data generated.", 'success');
+                    setSimStatuses('Cleaned', 'Processing', 'Pending');
+                }, 1500);
+
+                setTimeout(() => {
+                    logToConsole("Rhadamanthys evaluating sanitization details...", 'info');
+                    logToConsole("Rhadamanthys Validation Error: Injected SQL payload blocked. Schema mismatch detected on guide chunk data structure.", 'error');
+                    logToConsole("Rhadamanthys Verdict: PAYLOAD REJECTED. Security log appended to execution logs.", 'error');
+                    logToConsole("ALERT: Communication pathway dropped at Boundary Zone.", 'error');
+                    setSimStatuses('Cleaned', 'REJECTED', 'Blocked');
+                    showToast("Attack neutralized! Exploit blocked by Rhadamanthys.", "success");
+                }, 2500);
+            }
+        }
+
+        // Set and fetch presets for GitHub Repo tool
         function setAndQueryPreset(username) {
             document.getElementById("gh-username").value = username;
             fetchRepositories();
         }
 
+        // Live unauthenticated fetch from GitHub REST API
         async function fetchRepositories() {
             const username = document.getElementById("gh-username").value.trim();
             const grid = document.getElementById("repo-grid");
             
             if (!username) {
-                grid.innerHTML = `<div class="text-center py-12 text-slate-500 col-span-full">Please enter a valid GitHub handle above.</div>`;
+                grid.innerHTML = `<div class="text-center py-12 text-slate-500 col-span-full">Please enter a valid GitHub handle.</div>`;
                 return;
             }
 
             grid.innerHTML = `
                 <div class="text-center py-12 text-slate-400 col-span-full space-y-3">
                     <span class="material-icons animate-spin text-3xl text-blue-500">sync</span>
-                    <p class="text-xs font-mono">Querying GitHub Public API directly from browser...</p>
+                    <p class="text-xs font-mono">Querying repository assets via GitHub REST API...</p>
                 </div>`;
 
             try {
-                // Perform dynamic GET request to fetch 6 most recently updated repositories
                 const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
                 
                 if (!response.ok) {
@@ -700,25 +1150,61 @@
                     return;
                 }
 
-                grid.innerHTML = ""; // Clear loader
+                grid.innerHTML = ""; // Clear Loader
 
                 repos.forEach(repo => {
+                    // Check if there is already an active architecture mapping saved in storage
+                    const previouslyLinked = Object.keys(repositoryAssociations).find(key => repositoryAssociations[key] === repo.name);
+                    
                     const card = document.createElement("div");
                     card.className = "bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+                    
+                    // Dropdown menu letting user map actual GitHub project code directly to design schemas!
                     card.innerHTML = `
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <div class="flex justify-between items-start">
-                                <span class="material-icons text-blue-400 text-lg">folder_open</span>
+                                <span class="material-icons text-blue-400 text-lg">snippet_folder</span>
                                 <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
-                                    ${repo.language || "Markdown"}
+                                    ${repo.language || "Python"}
                                 </span>
                             </div>
                             <h4 class="text-base font-bold text-white truncate" title="${repo.name}">${repo.name}</h4>
                             <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">
-                                ${repo.description || "No description provided for this public repository."}
+                                ${repo.description || "Contains source code, configurations, or orchestration files for the backlog scraper execution matrix."}
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-slate-900 flex justify-between items-center text-xs text-slate-500 font-mono">
+
+                        <!-- Dropdown to explicitly assign live repository to design components -->
+                        <div class="pt-3 border-t border-slate-900 space-y-2">
+                            <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Bind to Phase Components</label>
+                            <select onchange="associateRepo(this, '${repo.name}')" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-[11px] text-slate-300 focus:outline-none">
+                                <option value="">-- Unassigned (Not in Evolution Map) --</option>
+                                <optgroup label="Phase 1: V1 Standalone Script">
+                                    <option value="raw_scraper" ${previouslyLinked === "raw_scraper" ? "selected" : ""}>V1 Standalone Python Scraper</option>
+                                    <option value="v1_db" ${previouslyLinked === "v1_db" ? "selected" : ""}>V1 SQLite Database</option>
+                                    <option value="v1_cli" ${previouslyLinked === "v1_cli" ? "selected" : ""}>V1 Terminal Logger</option>
+                                </optgroup>
+                                <optgroup label="Phase 2: V2 Multi-Container App">
+                                    <option value="v2_sync_bridge" ${previouslyLinked === "v2_sync_bridge" ? "selected" : ""}>V2 Node Sync-Bridge & Backlog JS</option>
+                                    <option value="v2_db" ${previouslyLinked === "v2_db" ? "selected" : ""}>V2 SQLite Database Container</option>
+                                    <option value="v2_streamlit" ${previouslyLinked === "v2_streamlit" ? "selected" : ""}>V2 Streamlit Dashboard UI</option>
+                                    <option value="v2_llm" ${previouslyLinked === "v2_llm" ? "selected" : ""}>V2 Direct Chat Handler</option>
+                                </optgroup>
+                                <optgroup label="Phase 3: V3 Zero-Trust Target">
+                                    <option value="sly" ${previouslyLinked === "sly" ? "selected" : ""}>Sly (PSN Ingest - MCP)</option>
+                                    <option value="milo" ${previouslyLinked === "milo" ? "selected" : ""}>Milo (Guide Scraper - MCP)</option>
+                                    <option value="minos" ${previouslyLinked === "minos" ? "selected" : ""}>Minos (Data Normalizer)</option>
+                                    <option value="rhadamanthys" ${previouslyLinked === "rhadamanthys" ? "selected" : ""}>Rhadamanthys (Judge)</option>
+                                    <option value="vault" ${previouslyLinked === "vault" ? "selected" : ""}>The Vault (Recovery Ledger)</option>
+                                    <option value="dewey" ${previouslyLinked === "dewey" ? "selected" : ""}>Dewey (Master Write Gateway)</option>
+                                    <option value="hermes" ${previouslyLinked === "hermes" ? "selected" : ""}>Hermes (Sync Diode)</option>
+                                    <option value="thekeeper" ${previouslyLinked === "thekeeper" ? "selected" : ""}>TheKeeper (User Read Replica)</option>
+                                    <option value="charon" ${previouslyLinked === "charon" ? "selected" : ""}>Charon (AI Orchestrator)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-900 flex justify-between items-center text-xs text-slate-500 font-mono">
                             <span class="flex items-center"><span class="material-icons text-sm mr-1 text-amber-400">star</span> ${repo.stargazers_count}</span>
                             <span class="flex items-center"><span class="material-icons text-sm mr-1">call_split</span> ${repo.forks_count}</span>
                             <a href="${repo.html_url}" target="_blank" class="text-blue-400 hover:text-blue-300 font-bold flex items-center">
@@ -739,43 +1225,182 @@
             }
         }
 
-        const articles = {
-            1: {
-                category: "Part I: Defending Sandbox",
-                title: "Containing LLM Blast Radii with TheKeeper Sandbox",
-                content: `
-                    <p>When engineering an AI orchestrator that operates near a sensitive database plane, developers often make the mistake of granting the AI direct database connections. If a prompt injection occurs, your backend files are immediately vulnerable to destructive SQL commands.</p>
-                    <p><strong>The Solution: The Replication Sandbox</strong></p>
-                    <p>In our architecture, the client-facing LLM (Charon) only has access to a sandboxed, read-optimized local replica file named <em>TheKeeper</em>. Even if a malicious prompt fools Charon, the blast radius is entirely restricted to this throwaway SQLite file. The master data plane remains fully air-gapped behind the trust boundary.</p>
-                `
-            },
-            2: {
-                category: "Part II: MCP Servers",
-                title: "Translating Scrapes to MCP-Enabled Micro-Agents",
-                content: `
-                    <p>Rather than using large, bloated scripts to interact with PSN data and guide web pages, we turn our scrapers (Sly and Milo) into dedicated Model Context Protocol (MCP) servers.</p>
-                    <p><strong>Why This Matters:</strong></p>
-                    <p>MCP standardizes how an AI discovers and runs specialized software tools. By embedding small language models directly inside Sly and Milo, they transform raw web results and data dumps into clean, predictable tool interfaces that are safe and easy to query across the trust boundary.</p>
-                `
-            },
-            3: {
-                category: "Part III: Ledgers",
-                title: "The Ingestion Council & Content-Addressed DB Deltas",
-                content: `
-                    <p>When Milo scrapes guides from public websites, it introduces the risk of indirect prompt injections hidden in CSS tags. The Ingestion Council Zone steps in to neutralize this risk.</p>
-                    <p><strong>The Validation Loop:</strong></p>
-                    <p>Raw text passes through Minos, which aggressively strips HTML strings and CSS formats. Rhadamanthys verifies the layout structure, then writes the approved transaction block directly to the Vault ledger. This lets Dewey execute safe, parameterized SQL updates, making the entire write path structurally immune to attacks.</p>
-                `
+        // Handles binding repositories directly with active diagram zones
+        function associateRepo(selectElement, repoName) {
+            const chosenNode = selectElement.value;
+            
+            // Remove previous link to this repository name if any exists
+            Object.keys(repositoryAssociations).forEach(key => {
+                if (repositoryAssociations[key] === repoName) {
+                    delete repositoryAssociations[key];
+                }
+            });
+
+            if (chosenNode) {
+                repositoryAssociations[chosenNode] = repoName;
+                showToast(`Mapped repo "${repoName}" to component: "${chosenNode}"`);
+            } else {
+                showToast(`Removed mapping for "${repoName}"`);
             }
-        };
 
-        function showArticle(index) {
-            const data = articles[index];
-            if (!data) return;
+            // Save state dynamically
+            localStorage.setItem('repo_associations_v2', JSON.stringify(repositoryAssociations));
+            
+            // Re-render visual annotations if active component is matched
+            if (activeTopology === "v1") {
+                const v1Match = Object.keys(v1Components).find(k => repositoryAssociations[k]);
+                if (v1Match) inspectV1(v1Match);
+            } else if (activeTopology === "v2") {
+                const v2Match = Object.keys(v2Components).find(k => repositoryAssociations[k]);
+                if (v2Match) inspectV2(v2Match);
+            } else {
+                const v3Match = Object.keys(componentsV3).find(k => repositoryAssociations[k]);
+                if (v3Match) inspectV3(v3Match);
+            }
+        }
 
-            document.getElementById("modal-category").innerText = data.category;
-            document.getElementById("modal-title").innerText = data.title;
-            document.getElementById("modal-content").innerHTML = data.content;
+        // CMS Blog Engine Core Functions
+        function getStoredPosts() {
+            let posts = localStorage.getItem('architecture_posts_v2');
+            if (!posts) {
+                localStorage.setItem('architecture_posts_v2', JSON.stringify(defaultBlogPosts));
+                return defaultBlogPosts;
+            }
+            return JSON.parse(posts);
+        }
+
+        function renderBlogPosts() {
+            const blogGrid = document.getElementById("blog-grid");
+            const posts = getStoredPosts();
+            blogGrid.innerHTML = ""; // Clear existing grid
+
+            posts.forEach(post => {
+                const article = document.createElement("article");
+                article.className = "bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between";
+                article.innerHTML = `
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">${post.category}</span>
+                            <span class="text-[9px] text-slate-500 font-mono">${post.date || 'Notebook Entry'}</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white line-clamp-2">${post.title}</h4>
+                        <div class="text-slate-400 text-xs leading-relaxed line-clamp-3">
+                            ${post.content}
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
+                        <div class="flex space-x-2">
+                            <button onclick="editBlogPost('${post.id}')" class="text-slate-400 hover:text-white font-bold inline-flex items-center transition">
+                                <span class="material-icons text-sm mr-0.5">edit</span>
+                                <span>Edit</span>
+                            </button>
+                            <button onclick="deleteBlogPost('${post.id}')" class="text-rose-400 hover:text-rose-300 font-bold inline-flex items-center transition">
+                                <span class="material-icons text-sm mr-0.5">delete</span>
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                        <button onclick="showBlogPost('${post.id}')" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
+                            <span>Read Article</span>
+                            <span class="material-icons text-sm ml-1">arrow_forward</span>
+                        </button>
+                    </div>
+                `;
+                blogGrid.appendChild(article);
+            });
+        }
+
+        function toggleBlogEditor() {
+            const form = document.getElementById("blog-editor-form");
+            form.classList.toggle("hidden");
+            
+            // Clear inputs for clean form write
+            document.getElementById("edit-post-id").value = "";
+            document.getElementById("post-title").value = "";
+            document.getElementById("post-content").value = "";
+            document.getElementById("editor-form-title").innerText = "Publish New Entry";
+            document.getElementById("save-post-btn").innerText = "Commit Journal";
+        }
+
+        function saveBlogPost() {
+            const idInput = document.getElementById("edit-post-id").value;
+            const category = document.getElementById("post-category").value;
+            const title = document.getElementById("post-title").value.trim();
+            const content = document.getElementById("post-content").value.trim();
+            
+            if (!title || !content) {
+                showToast("Please enter both a title and article body.", "error");
+                return;
+            }
+
+            const posts = getStoredPosts();
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            if (idInput) {
+                // Edit existing post
+                const matchIndex = posts.findIndex(p => p.id === idInput);
+                if (matchIndex !== -1) {
+                    posts[matchIndex].category = category;
+                    posts[matchIndex].title = title;
+                    posts[matchIndex].content = content;
+                    posts[matchIndex].date = `${timestamp} (Edited)`;
+                }
+                showToast("Journal entry updated successfully!");
+            } else {
+                // Add new post
+                const newPost = {
+                    id: "post_" + Date.now(),
+                    category,
+                    title,
+                    content,
+                    date: timestamp
+                };
+                posts.unshift(newPost);
+                showToast("Saved new entry to local notebooks!");
+            }
+
+            localStorage.setItem('architecture_posts_v2', JSON.stringify(posts));
+            renderBlogPosts();
+            toggleBlogEditor();
+        }
+
+        function editBlogPost(id) {
+            const posts = getStoredPosts();
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            // Open editor in Edit mode
+            const form = document.getElementById("blog-editor-form");
+            form.classList.remove("hidden");
+
+            document.getElementById("edit-post-id").value = post.id;
+            document.getElementById("post-category").value = post.category;
+            document.getElementById("post-title").value = post.title;
+            document.getElementById("post-content").value = post.content;
+            
+            document.getElementById("editor-form-title").innerText = `Edit: ${post.title}`;
+            document.getElementById("save-post-btn").innerText = "Commit Update";
+            
+            // Smooth scroll to editor
+            form.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteBlogPost(id) {
+            const posts = getStoredPosts();
+            const filtered = posts.filter(p => p.id !== id);
+            localStorage.setItem('architecture_posts_v2', JSON.stringify(filtered));
+            renderBlogPosts();
+            showToast("Notebook entry deleted.", "warning");
+        }
+
+        function showBlogPost(id) {
+            const posts = getStoredPosts();
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById("modal-category").innerText = post.category;
+            document.getElementById("modal-title").innerText = post.title;
+            document.getElementById("modal-content").innerHTML = post.content;
             
             document.getElementById("article-modal").classList.remove("hidden");
             document.body.classList.add("overflow-hidden");
@@ -786,11 +1411,23 @@
             document.body.classList.remove("overflow-hidden");
         }
 
+        function clearBlogMemory() {
+            localStorage.removeItem('architecture_posts_v2');
+            localStorage.removeItem('repo_associations_v2');
+            repositoryAssociations = {};
+            renderBlogPosts();
+            showToast("Reset local memory logs successfully.", "warning");
+        }
+
+        // Initialize Workspace Application
         window.onload = function() {
-            // Default select Charon architecture view
-            inspect('charon');
+            // Default select V2 view on boot as requested (Existing monolithic multi-container setup)
+            switchTopology('v2');
+
+            // Initialize and render notebooks from storage CMS
+            renderBlogPosts();
             
-            // Automatically execute the primary GitHub search on load
+            // Execute the default preset unauthenticated GitHub project query
             fetchRepositories();
         }
     </script>
