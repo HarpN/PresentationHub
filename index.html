@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trophy Backlog Command Center Hub</title>
+    
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar for terminal and lists */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Glow animations */
+        @keyframes pulse-glow-blue {
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); border-color: rgba(59, 130, 246, 0.8); }
+        }
+        @keyframes pulse-glow-red {
+            0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); border-color: rgba(239, 68, 68, 0.8); }
+        }
+        @keyframes pulse-glow-purple {
+            0%, 100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); border-color: rgba(168, 85, 247, 0.8); }
+        }
+        @keyframes pulse-glow-green {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.5); border-color: rgba(34, 197, 94, 0.8); }
+        }
+        .active-blue { animation: pulse-glow-blue 2s infinite; }
+        .active-red { animation: pulse-glow-red 2s infinite; }
+        .active-purple { animation: pulse-glow-purple 2s infinite; }
+        .active-green { animation: pulse-glow-green 2s infinite; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-blue-500 selection:text-white">
+
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="material-icons text-blue-500 text-3xl">security</span>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Trophy Backlog</h1>
+                    <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Command Center Dashboard</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#blueprint" class="text-slate-300 hover:text-white transition text-sm font-medium">Architecture</a>
+                <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Simulation</a>
+                <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">Repositories</a>
+                <a href="#engineering-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Articles</a>
+            </nav>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    Systems Operational
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
+            <div class="lg:col-span-7 space-y-6">
+                <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                    An Isolated, Multi-Agent <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Security-First</span> Data Lake
+                </h2>
+                <p class="text-lg text-slate-300 leading-relaxed max-w-2xl">
+                    Welcome to the Trophy Backlog Command Center. This showcase is a fully isolated, air-gapped data plane architected to gather personal PlayStation Network telemetry and strategy guide data safely. It completely neutralizes internet prompt injection threats before the client-facing UI can touch it.
+                </p>
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="#blueprint" class="px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition font-medium text-sm inline-flex items-center space-x-2 shadow-lg shadow-blue-500/10">
+                        <span>Explore the Blueprint</span>
+                        <span class="material-icons text-sm">arrow_forward</span>
+                    </a>
+                    <a href="#simulator" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition font-medium text-sm text-slate-300 hover:text-white inline-flex items-center space-x-2">
+                        <span class="material-icons text-sm">science</span>
+                        <span>Run Threat Simulator</span>
+                    </a>
+                </div>
+            </div>
+            <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Environment Metadata</span>
+                    <span class="text-xs text-blue-400 font-mono">v3.0.0-PROD</span>
+                </div>
+                <div class="space-y-3 font-mono text-sm">
+                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
+                        <span class="text-slate-500">Core Orchestration</span>
+                        <span class="text-slate-300">MCP Client (Charon)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
+                        <span class="text-slate-500">Validation Protocol</span>
+                        <span class="text-slate-300">Admission Council (Rhadamanthys)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800/50 pb-2">
+                        <span class="text-slate-500">Immutable Ledger</span>
+                        <span class="text-slate-300">The Vault (Append-Only)</span>
+                    </div>
+                    <div class="flex justify-between pb-2">
+                        <span class="text-slate-500">Network Diode</span>
+                        <span class="text-slate-300">Hermes (Outbound Sync Only)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="blueprint" class="space-y-6">
+            <div class="space-y-2">
+                <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">System Topology Map</span>
+                <h3 class="text-2xl font-bold text-white">Multi-Zone Network Separation</h3>
+                <p class="text-slate-400 text-sm max-w-3xl">
+                    Every element is isolated based on its security classification. Click on any component to inspect its code contract, operational zone, and defensive properties.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Interactive Diagram Area -->
+                <div class="lg:col-span-8 flex flex-col space-y-6 bg-slate-950 p-6 rounded-xl border border-slate-800">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Click components below to inspect details</span>
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> Active Schema</span>
+                    </div>
+                    
+                    <!-- Diagram Grid Zones -->
+                    <div class="space-y-8 select-none">
+                        
+                        <!-- Zone: Untrusted -->
+                        <div class="border border-red-500/20 bg-red-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-red-400 uppercase tracking-widest">Zone 1: Untrusted Internet</span>
+                            <div class="flex justify-around items-center pt-4 space-x-4">
+                                <div onclick="inspect('sly')" id="node-sly" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-blue-400">vpn_lock</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Sly (PSN Ingest)</h4>
+                                    <span class="text-[9px] text-blue-300 font-mono">MCP Server</span>
+                                </div>
+                                <div class="text-slate-600 font-bold">◄ ►</div>
+                                <div onclick="inspect('milo')" id="node-milo" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-purple-400">explore</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Milo (Guide Scraper)</h4>
+                                    <span class="text-[9px] text-purple-300 font-mono">MCP Server</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Down -->
+                        <div class="text-center text-slate-600 text-sm">▼ Normalization Pipeline</div>
+
+                        <!-- Zone: Ingestion Council -->
+                        <div class="border border-orange-500/20 bg-orange-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-orange-400 uppercase tracking-widest">Zone 2: Ingestion Admission Zone</span>
+                            <div class="flex justify-around items-center pt-4 space-x-4">
+                                <div onclick="inspect('minos')" id="node-minos" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-orange-400">clean_hands</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Minos (HTML Strip)</h4>
+                                    <span class="text-[9px] text-slate-400 font-mono">Deterministic SLM</span>
+                                </div>
+                                <div class="text-slate-600 font-bold">►</div>
+                                <div onclick="inspect('rhadamanthys')" id="node-rhadamanthys" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-amber-400">rule</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Rhadamanthys (Judge)</h4>
+                                    <span class="text-[9px] text-slate-400 font-mono">Schema Guard</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Down -->
+                        <div class="text-center text-slate-600 text-sm">▼ Write-Only Append Channel</div>
+
+                        <!-- Zone: Chalcids Data Plane -->
+                        <div class="border border-purple-500/20 bg-purple-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-purple-400 uppercase tracking-widest">Zone 3: Chalcids Isolated Data Plane</span>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 items-center">
+                                <div onclick="inspect('vault')" id="node-vault" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                    <span class="material-icons text-red-500">history_edu</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">The Vault</h4>
+                                    <span class="text-[9px] text-red-400 font-mono">Immutable Ledger</span>
+                                </div>
+                                <div onclick="inspect('dewey')" id="node-dewey" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                    <span class="material-icons text-purple-400">inventory</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Dewey (Master GW)</h4>
+                                    <span class="text-[9px] text-purple-300 font-mono">Content Hash DB</span>
+                                </div>
+                                <div onclick="inspect('hermes')" id="node-hermes" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center">
+                                    <span class="material-icons text-green-400">swap_calls</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Hermes (Sync Diode)</h4>
+                                    <span class="text-[9px] text-green-300 font-mono">Outbound Only</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Down -->
+                        <div class="text-center text-slate-600 text-sm">▼ Encrypted One-Way Delta Push</div>
+
+                        <!-- Zone: User Sandbox -->
+                        <div class="border border-emerald-500/20 bg-emerald-950/5 p-4 rounded-xl relative">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Zone 4: User Sandbox Sandbox (Visible Space)</span>
+                            <div class="flex justify-around items-center pt-4 space-x-4">
+                                <div onclick="inspect('thekeeper')" id="node-thekeeper" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-emerald-400">dns</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">TheKeeper</h4>
+                                    <span class="text-[9px] text-emerald-300 font-mono">Read SQLite Replica</span>
+                                </div>
+                                <div class="text-slate-600 font-bold">◄ ►</div>
+                                <div onclick="inspect('charon')" id="node-charon" class="cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]">
+                                    <span class="material-icons text-indigo-400">forum</span>
+                                    <h4 class="text-xs font-bold mt-1 text-slate-200">Charon (AI Orchestrator)</h4>
+                                    <span class="text-[9px] text-indigo-300 font-mono">Local LLM Host</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Inspector Card Side -->
+                <div class="lg:col-span-4 flex flex-col">
+                    <div id="inspector-card" class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex-grow flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                                <div>
+                                    <span id="inspect-zone" class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Zone Information</span>
+                                    <h4 id="inspect-title" class="text-xl font-bold text-white mt-1">Select Component</h4>
+                                </div>
+                                <span id="inspect-icon" class="material-icons text-slate-500 text-3xl">help_outline</span>
+                            </div>
+                            <div class="text-slate-300 text-sm leading-relaxed space-y-3" id="inspect-desc">
+                                <p>Click on any of the architecture components inside the map to examine their parameters, isolation metrics, and system contracts.</p>
+                                <p class="text-xs text-slate-500">Every microservice is sandboxed securely to achieve dynamic verification before changes touch the database plane.</p>
+                            </div>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800 space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Access Policy:</span>
+                                <span id="inspect-access" class="font-mono text-slate-300">N/A</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Target Protocol:</span>
+                                <span id="inspect-protocol" class="font-mono text-slate-300">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulator" class="space-y-6">
+            <div class="space-y-2">
+                <span class="text-xs font-bold tracking-widest text-red-400 uppercase font-mono">Live Ingestion Analysis</span>
+                <h3 class="text-2xl font-bold text-white">Ingestion Threat & Flow Simulator</h3>
+                <p class="text-slate-400 text-sm max-w-3xl">
+                    Run simulated data requests through the Admission Council pipeline to see how prompt injections are detected and purged before reaching the master database.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Control Panel -->
+                <div class="lg:col-span-4 bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide">Simulation Triggers</h4>
+                        <p class="text-xs text-slate-400">Trigger standard telemetry ingestion or a simulated adversarial exploit from the internet.</p>
+                        
+                        <div class="space-y-3">
+                            <button onclick="triggerSim('standard')" class="w-full py-3 px-4 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition rounded-lg font-semibold text-sm text-blue-400 flex items-center justify-between">
+                                <span class="flex items-center"><span class="material-icons mr-2 text-sm">cloud_sync</span> Standard Ingest</span>
+                                <span class="material-icons text-xs">play_arrow</span>
+                            </button>
+                            <button onclick="triggerSim('threat')" class="w-full py-3 px-4 bg-red-600/10 border border-red-500/20 hover:bg-red-600/20 transition rounded-lg font-semibold text-sm text-red-400 flex items-center justify-between">
+                                <span class="flex items-center"><span class="material-icons mr-2 text-sm">gavel</span> Simulated Threat</span>
+                                <span class="material-icons text-xs">security</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800/80 text-xs space-y-2">
+                        <div class="flex justify-between font-mono">
+                            <span class="text-slate-500">Normalizer Output:</span>
+                            <span id="sim-normalizer-status" class="text-slate-400">Idle</span>
+                        </div>
+                        <div class="flex justify-between font-mono">
+                            <span class="text-slate-500">Admission Verdict:</span>
+                            <span id="sim-admission-status" class="text-slate-400">Idle</span>
+                        </div>
+                        <div class="flex justify-between font-mono">
+                            <span class="text-slate-500">Atomic Replication:</span>
+                            <span id="sim-replication-status" class="text-slate-400">Idle</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Console Console -->
+                <div class="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-[350px]">
+                    <div class="border-b border-slate-800 bg-slate-900/60 px-4 py-3 flex items-center justify-between">
+                        <div class="flex space-x-1.5">
+                            <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                        </div>
+                        <span class="mono text-xs text-slate-500">trace_observer.log</span>
+                    </div>
+                    <div id="sim-console" class="p-5 font-mono text-xs space-y-3 overflow-y-auto flex-grow bg-slate-950 text-slate-300">
+                        <div class="text-slate-500">// System ready. Click Ingest triggers to run simulation traces.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="github-hub" class="space-y-6">
+            <div class="space-y-2">
+                <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Live Code Metrics</span>
+                <h3 class="text-2xl font-bold text-white">Dynamic Code Integration Hub</h3>
+                <p class="text-slate-400 text-sm max-w-3xl">
+                    By bypassing expensive premium builders, this site queries the public, unauthenticated **GitHub REST API** straight from your client's browser to display live project statistics. Try loading a target GitHub handle below!
+                </p>
+            </div>
+
+            <!-- Profile Target Input -->
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="relative w-full max-w-sm">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                        <span class="material-icons text-sm">alternate_email</span>
+                    </span>
+                    <input type="text" id="gh-username" value="facebook" class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition mono" placeholder="GitHub Username">
+                </div>
+                <button onclick="fetchRepositories()" class="w-full sm:w-auto py-2 px-5 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-sm font-semibold text-white flex items-center justify-center space-x-2">
+                    <span class="material-icons text-sm">sync</span>
+                    <span>Query Repositories</span>
+                </button>
+            </div>
+
+            <!-- Repository Cards Container -->
+            <div id="repo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JavaScript handles population here -->
+                <div class="text-center py-12 text-slate-500 col-span-full">
+                    Enter a GitHub handle above and click Query to retrieve live open-source project cards.
+                </div>
+            </div>
+        </section>
+
+        <section id="engineering-blog" class="space-y-6">
+            <div class="space-y-2">
+                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architecture Notebook</span>
+                <h3 class="text-2xl font-bold text-white">Security-First Platform Blog</h3>
+                <p class="text-slate-400 text-sm max-w-3xl">
+                    Deep architectural essays and designs cataloging the engineering evolution of the Trophy Backlog Command Center.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Blog Article 1 -->
+                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono">Part I: Defending Sandbox</span>
+                        <h4 class="text-lg font-bold text-white">Containing LLM Blast Radii with TheKeeper Sandbox</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
+                            Direct AI interactions with master databases introduce deep injection paths. Explore how wrapping read replicas inside isolated client nodes shields core state files.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">6 min read</span>
+                        <button onclick="showArticle(1)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
+                            <span>Read Article</span>
+                            <span class="material-icons text-sm ml-1">arrow_forward</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog Article 2 -->
+                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-purple-400 font-mono">Part II: MCP Servers</span>
+                        <h4 class="text-lg font-bold text-white">Translating Scrapes to MCP-Enabled Micro-Agents</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
+                            Monolithic scrapers present complex point-to-point issues. Learn how Sly and Milo leverage Model Context Protocol servers to establish isolated telemetry domain experts.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">8 min read</span>
+                        <button onclick="showArticle(2)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
+                            <span>Read Article</span>
+                            <span class="material-icons text-sm ml-1">arrow_forward</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog Article 3 -->
+                <article class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400 font-mono">Part III: Ledgers</span>
+                        <h4 class="text-lg font-bold text-white">The Ingestion Council & Content-Addressed DB Deltas</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">
+                            What happens when malicious third parties inject strings inside public guides? Discover the validation protocols of Minos and Rhadamanthys.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
+                        <span class="text-slate-500">10 min read</span>
+                        <button onclick="showArticle(3)" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
+                            <span>Read Article</span>
+                            <span class="material-icons text-sm ml-1">arrow_forward</span>
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="article-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-3xl w-full max-h-[80vh] flex flex-col justify-between overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
+                <div>
+                    <span id="modal-category" class="text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono">Article Tag</span>
+                    <h4 id="modal-title" class="text-xl font-bold text-white mt-1">Article Title</h4>
+                </div>
+                <button onclick="closeModal()" class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div id="modal-content" class="p-6 text-sm text-slate-300 leading-relaxed overflow-y-auto space-y-4">
+                <!-- Populated via JavaScript -->
+            </div>
+            <div class="p-6 border-t border-slate-800 flex justify-end bg-slate-950/40">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 transition rounded-lg text-xs font-semibold text-white">
+                    Dismiss View
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-slate-800 bg-slate-950 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500">
+            <p>© 2026 Trophy Backlog Command Center. Engineered for full architectural decoupling.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <span class="hover:text-slate-300 transition cursor-pointer">Protocol Standard</span>
+                <span class="hover:text-slate-300 transition cursor-pointer">Security Ledger</span>
+                <span class="hover:text-slate-300 transition cursor-pointer">Local Replica Docs</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Data Store for Blueprint Components
+        const components = {
+            sly: {
+                title: "Sly (PlayStation Network Ingestion)",
+                zone: "Zone 1: Untrusted Internet",
+                desc: "<p>Named after PlayStation’s master thief, Sly runs as a decoupled MCP server on a strictly controlled interval schema to monitor PSN rate limits.</p><p>Its single task is extracting raw user telemetry, translating the payloads into clean, deterministic formats, and immediately presenting these updates as standard MCP Tool outputs.</p>",
+                access: "Read-Only (External Access)",
+                protocol: "PSN Web API / HTTPS"
+            },
+            milo: {
+                title: "Milo (Web Guide Scraper)",
+                zone: "Zone 1: Untrusted Internet",
+                desc: "<p>Named after Atlantis's expert translator, Milo handles the complex scraping of external trophy guides (e.g., PSNProfiles) to establish RAG context chains.</p><p>Because web scrapers represent critical endpoints vulnerable to indirect prompt injection payloads, Milo runs fully isolated behind the Admission Council.</p>",
+                access: "Read-Only (External Access)",
+                protocol: "Web Crawler / HTML Parser"
+            },
+            minos: {
+                title: "Minos (Data Normalizer)",
+                zone: "Zone 2: Ingestion Admission Zone",
+                desc: "<p>Minos acts as the first line of database protection inside the admission zone. It receives raw guide data directly from Milo.</p><p>By combining rigorous regex parsers with a tiny, unprivileged, local, deterministic SLM, Minos strips all web noise, formatting anomalies, and hidden executable scripts.</p>",
+                access: "Internal Ingestion Port Only",
+                protocol: "Unprivileged Local SLM"
+            },
+            rhadamanthys: {
+                title: "Rhadamanthys (Data Judge)",
+                zone: "Zone 2: Ingestion Admission Zone",
+                desc: "<p>The ultimate validator of incoming database changes. Rhadamanthys inspects the normalized output provided by Minos.</p><p>It runs checks against explicit constraints (e.g., matching strict platform enums). If a payload shows traces of prompt injection, Rhadamanthys raises a flag, halts ingestion, and blocks the write route.</p>",
+                access: "Data Judge Port Only",
+                protocol: "Strict Structural Engine"
+            },
+            vault: {
+                title: "The Vault (Immutable Recovery Ledger)",
+                zone: "Zone 3: Chalcids Isolated Data Plane",
+                desc: "<p>The Vault is an air-gapped, append-only volume containing a cryptographically chained ledger file. When Rhadamanthys approves a clean update, the transaction is logged here.</p><p>If a downstream corruption ever hits the active database, the system can rebuild a perfect, verified state by replaying Vault history.</p>",
+                access: "Write-Only (Rhadamanthys) / Read-Only (Dewey)",
+                protocol: "Append-Only File Volume"
+            },
+            dewey: {
+                title: "Dewey (Master Write-Gateway)",
+                zone: "Zone 3: Chalcids Isolated Data Plane",
+                desc: "<p>Dewey is the sole write gate for the master SQLite database. Dewey reads updates exclusively from the Vault ledger file.</p><p>Dewey implements atomic, content-addressable deduplication. Instead of writing heavy duplicate entries, it tracks changes via SHA-256 content hashes, enabling surgical rollbacks.</p>",
+                access: "Read Vault Ledger Only",
+                protocol: "Content-Addressed SQLite Controller"
+            },
+            hermes: {
+                title: "Hermes (Synchronization Diode)",
+                zone: "Zone 3: Chalcids Isolated Data Plane",
+                desc: "<p>Hermes acts as the one-way network gate protecting the data plane from the client visible zone. It has zero knowledge of the master database or the Vault.</p><p>When Dewey outputs a local delta updates file, Hermes detects the update, packages the change into compressed stream packets, and pushes it outbound to TheKeeper.</p>",
+                access: "Read Local Replica Snapshots",
+                protocol: "File Event (Inotify) / Outbound Socket Stream"
+            },
+            thekeeper: {
+                title: "TheKeeper (User Read Replica)",
+                zone: "Zone 4: User Sandbox (Visible Space)",
+                desc: "<p>TheKeeper serves as Charon's isolated data universe. It holds a local read-replica SQLite file representing the state of the master platform.</p><p>If an attacker tricks Charon with an injection attack, the exploit can only corrupt TheKeeper's local file. The master data plane remains fully isolated and secure.</p>",
+                access: "Read-Only (Charon / User Interface)",
+                protocol: "Local Sandbox SQLite File"
+            },
+            charon: {
+                title: "Charon (AI Command Client)",
+                zone: "Zone 4: User Sandbox (Visible Space)",
+                desc: "<p>Charon is the local LLM-powered orchestrator. It handles natural language commands from the user to help them plan, track, and optimize trophy runs.</p><p>Charon consumes tools exposed by local MCP servers but only interacts with database data from TheKeeper, preventing exposure of backend settings.</p>",
+                access: "Read TheKeeper / Consume MCP Tools",
+                protocol: "Local Model Context Client"
+            }
+        };
+
+        // 2. Interactive Blueprint Inspector Handlers
+        function inspect(componentKey) {
+            const data = components[componentKey];
+            if (!data) return;
+
+            // Highlight Node Visually
+            document.querySelectorAll("[id^='node-']").forEach(node => {
+                node.className = "cursor-pointer p-3 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-center w-full max-w-[180px]";
+            });
+            const activeNode = document.getElementById(`node-${componentKey}`);
+            if (activeNode) {
+                activeNode.className = "cursor-pointer p-3 bg-slate-950 border transition rounded-lg text-center w-full max-w-[180px] active-blue";
+            }
+
+            // Populate Inspector Card Info
+            document.getElementById("inspect-zone").innerText = data.zone;
+            document.getElementById("inspect-title").innerText = data.title;
+            document.getElementById("inspect-desc").innerHTML = data.desc;
+            document.getElementById("inspect-access").innerText = data.access;
+            document.getElementById("inspect-protocol").innerText = data.protocol;
+            
+            // Set Icon
+            const iconMap = {
+                sly: "vpn_lock", milo: "explore", minos: "clean_hands",
+                rhadamanthys: "rule", vault: "history_edu", dewey: "inventory",
+                hermes: "swap_calls", thekeeper: "dns", charon: "forum"
+            };
+            document.getElementById("inspect-icon").innerText = iconMap[componentKey] || "help_outline";
+        }
+
+        // 3. Simulated Logs Ingestion Streams
+        const consoleEl = document.getElementById("sim-console");
+
+        function logToConsole(message, type = 'info') {
+            const wrapper = document.createElement("div");
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let colorClass = "text-slate-400";
+            if (type === 'success') colorClass = "text-emerald-400";
+            if (type === 'warning') colorClass = "text-amber-400";
+            if (type === 'error') colorClass = "text-red-400 font-bold";
+            if (type === 'header') colorClass = "text-blue-400 font-bold uppercase tracking-wider";
+
+            wrapper.className = `${colorClass} py-0.5 border-b border-slate-900/40`;
+            wrapper.innerHTML = `<span class="text-slate-600 font-mono">[${timestamp}]</span> ${message}`;
+            consoleEl.appendChild(wrapper);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function triggerSim(mode) {
+            consoleEl.innerHTML = ""; // Clear existing logs
+            logToConsole(`Initializing Target Simulation Chain: ${mode.toUpperCase()}`, 'header');
+
+            if (mode === 'standard') {
+                runStandardSimulation();
+            } else {
+                runThreatSimulation();
+            }
+        }
+
+        function runStandardSimulation() {
+            setSimStatuses('Processing', 'Pending', 'Pending');
+            
+            setTimeout(() => {
+                logToConsole("Milo Scraper triggered: Requesting guide metrics for 'Sly Cooper (PS5)'", 'info');
+                logToConsole("Milo successfully returned scraped raw text payloads.", 'info');
+            }, 600);
+
+            setTimeout(() => {
+                logToConsole("Transferring data payload to Minos (The Normalizer)...", 'info');
+                logToConsole("Minos Stripper running: Cleaning web HTML strings and structural anomalies...", 'info');
+                logToConsole("Minos Output: Cleaned JSON object with valid schemas.", 'success');
+                setSimStatuses('Cleaned', 'Processing', 'Pending');
+            }, 1500);
+
+            setTimeout(() => {
+                logToConsole("Transferring parameters to Rhadamanthys Data Judge...", 'info');
+                logToConsole("Rhadamanthys: Checking schema metrics and character enums...", 'info');
+                logToConsole("Rhadamanthys Verdict: Payload matches strict platform and type contracts. [APPROVED]", 'success');
+                setSimStatuses('Cleaned', 'Approved', 'Processing');
+            }, 2500);
+
+            setTimeout(() => {
+                logToConsole("Rhadamanthys appending cryptographically signed block to The Vault ledger file...", 'info');
+                logToConsole("Dewey Core: Reading fresh Vault transaction...", 'info');
+                logToConsole("Dewey: Checking content duplicate deduplication matches...", 'info');
+                logToConsole("Dewey: Generating SHA-256 block update delta, writing safely to Master DB SQLite.", 'success');
+                logToConsole("Replication Diode (Hermes) triggered: Packaging atomic diff block for sync...", 'info');
+                logToConsole("Hermes: Streaming update outward to TheKeeper user read-replica. Sync Complete.", 'success');
+                setSimStatuses('Cleaned', 'Approved', 'Complete');
+            }, 3800);
+        }
+
+        function runThreatSimulation() {
+            setSimStatuses('Processing', 'Pending', 'Pending');
+            
+            setTimeout(() => {
+                logToConsole("Milo Scraper triggered: Fetching guide data for 'Uncharted 2'", 'info');
+                logToConsole("WARNING: Scraped guide page contains hidden adversarial CSS text blocks!", 'warning');
+                logToConsole("Milo Output payload: Include malicious injection: 'DROP TABLE games;--'", 'warning');
+            }, 600);
+
+            setTimeout(() => {
+                logToConsole("Forwarding payload to Minos Normalizer DMZ boundary...", 'info');
+                logToConsole("Minos: Stripping HTML tags and executing prompt extraction rules...", 'info');
+                logToConsole("Minos Output: Unescaped raw command strings intercepted. Cleaned data generated.", 'success');
+                setSimStatuses('Cleaned', 'Processing', 'Pending');
+            }, 1500);
+
+            setTimeout(() => {
+                logToConsole("Rhadamanthys evaluating sanitization details...", 'info');
+                logToConsole("Rhadamanthys Validation Error: Injected SQL payload blocked. Schema mismatch detected on guide chunk data structure.", 'error');
+                logToConsole("Rhadamanthys Verdict: PAYLOAD REJECTED. Security log appended to execution logs.", 'error');
+                logToConsole("ALERT: Communication pathway dropped at Boundary Zone.", 'error');
+                setSimStatuses('Cleaned', 'REJECTED', 'Blocked');
+            }, 2500);
+        }
+
+        function setSimStatuses(norm, adm, repl) {
+            document.getElementById("sim-normalizer-status").innerText = norm;
+            document.getElementById("sim-admission-status").innerText = adm;
+            document.getElementById("sim-replication-status").innerText = repl;
+        }
+
+        // 4. Dynamic GitHub Public API Integration
+        async function fetchRepositories() {
+            const username = document.getElementById("gh-username").value.trim();
+            const grid = document.getElementById("repo-grid");
+            
+            if (!username) {
+                grid.innerHTML = `<div class="text-center py-12 text-slate-500 col-span-full">Please enter a valid GitHub handle above.</div>`;
+                return;
+            }
+
+            grid.innerHTML = `
+                <div class="text-center py-12 text-slate-400 col-span-full space-y-3">
+                    <span class="material-icons animate-spin text-3xl text-blue-500">sync</span>
+                    <p class="text-xs font-mono">Querying GitHub Public API directly from browser...</p>
+                </div>`;
+
+            try {
+                // Free, client-side GET request to public endpoint
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+                
+                if (!response.ok) {
+                    throw new Error("Unable to retrieve repositories. Profile not found or rate limited.");
+                }
+
+                const repos = await response.json();
+
+                if (repos.length === 0) {
+                    grid.innerHTML = `<div class="text-center py-12 text-slate-500 col-span-full">No public repositories found for this user.</div>`;
+                    return;
+                }
+
+                grid.innerHTML = ""; // Clear loader
+
+                repos.forEach(repo => {
+                    const card = document.createElement("div");
+                    card.className = "bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+                    card.innerHTML = `
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="material-icons text-blue-400 text-lg">folder_open</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
+                                    ${repo.language || "Markdown"}
+                                </span>
+                            </div>
+                            <h4 class="text-base font-bold text-white truncate">${repo.name}</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                                ${repo.description || "No description provided for this public repository."}
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-900 flex justify-between items-center text-xs text-slate-500 font-mono">
+                            <span class="flex items-center"><span class="material-icons text-sm mr-1 text-amber-400">star</span> ${repo.stargazers_count}</span>
+                            <span class="flex items-center"><span class="material-icons text-sm mr-1">call_split</span> ${repo.forks_count}</span>
+                            <a href="${repo.html_url}" target="_blank" class="text-blue-400 hover:text-blue-300 font-bold flex items-center">
+                                <span>Code</span>
+                                <span class="material-icons text-xs ml-0.5">open_in_new</span>
+                            </a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                grid.innerHTML = `
+                    <div class="text-center py-12 text-red-400 border border-red-500/10 bg-red-950/5 rounded-xl col-span-full space-y-2">
+                        <span class="material-icons text-3xl">error_outline</span>
+                        <p class="text-sm font-semibold">${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        // 5. Blog Modal Content Population
+        const articles = {
+            1: {
+                category: "Part I: Defending Sandbox",
+                title: "Containing LLM Blast Radii with TheKeeper Sandbox",
+                content: `
+                    <p>When engineering an AI orchestrator that operates near a sensitive database plane, developers often make the mistake of granting the AI direct database connections. If a prompt injection occurs, your backend files are immediately vulnerable to destructive SQL commands.</p>
+                    <p><strong>The Solution: The Replication Sandbox</strong></p>
+                    <p>In our architecture, the client-facing LLM (Charon) only has access to a sandboxed, read-optimized local replica file named <em>TheKeeper</em>. Even if a malicious prompt fools Charon, the blast radius is entirely restricted to this throwaway SQLite file. The master data plane remains fully air-gapped behind the trust boundary.</p>
+                `
+            },
+            2: {
+                category: "Part II: MCP Servers",
+                title: "Translating Scrapes to MCP-Enabled Micro-Agents",
+                content: `
+                    <p>Rather than using large, bloated scripts to interact with PSN data and guide web pages, we turn our scrapers (Sly and Milo) into dedicated Model Context Protocol (MCP) servers.</p>
+                    <p><strong>Why This Matters:</strong></p>
+                    <p>MCP standardizes how an AI discovers and runs specialized software tools. By embedding small language models directly inside Sly and Milo, they transform raw web results and data dumps into clean, predictable tool interfaces that are safe and easy to query across the trust boundary.</p>
+                `
+            },
+            3: {
+                category: "Part III: Ledgers",
+                title: "The Ingestion Council & Content-Addressed DB Deltas",
+                content: `
+                    <p>When Milo scrapes guides from public websites, it introduces the risk of indirect prompt injections hidden in CSS tags. The Ingestion Council Zone steps in to neutralize this risk.</p>
+                    <p><strong>The Validation Loop:</strong></p>
+                    <p>Raw text passes through Minos, which aggressively strips HTML strings and CSS formats. Rhadamanthys verifies the layout structure, then writes the approved transaction block directly to the Vault ledger. This lets Dewey execute safe, parameterized SQL updates, making the entire write path structurally immune to attacks.</p>
+                `
+            }
+        };
+
+        function showArticle(index) {
+            const data = articles[index];
+            if (!data) return;
+
+            document.getElementById("modal-category").innerText = data.category;
+            document.getElementById("modal-title").innerText = data.title;
+            document.getElementById("modal-content").innerHTML = data.content;
+            
+            document.getElementById("article-modal").classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("article-modal").classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }
+
+        // Initialize Blueprint on Load
+        window.onload = function() {
+            inspect('charon');
+            fetchRepositories(); // Defaults to loading a default profile's projects
+        }
+    </script>
+</body>
+</html>
