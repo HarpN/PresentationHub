@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "name": "PresentationHub",
+    "description": "Architecture log and publishing asset repository",
+    "default_branch": "main"
+  },
+  "runtime": {
+    "primary_mode": "documentation"
+  },
+  "commands": {
+    "start": {
+      "shell": "powershell",
+      "cwd": ".",
+      "command": "Write-Host 'PresentationHub has no runtime service; review docs and logs.'"
+    }
+  },
+  "entrypoint_files": [
+    "README.md",
+    "architecture_logs/Log-001.txt",
+    "index.html"
+  ],
+  "agent_review_notes": [
+    "Treat this repository as documentation-only unless scripts are added later.",
+    "Prefer consistency checks across architecture logs and related service READMEs."
+  ]
+}
