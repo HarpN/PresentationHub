@@ -1,0 +1,47 @@
+Subject: Inherent Security Model And Failure Handling In TheArchives V2
+Date: 2026-07-15
+Category: Architecture Log
+Subtitle: Why the stack fails closed, records evidence, and keeps writes gated.
+Repo Link: https://github.com/HarpN/TheArchives
+---
+Message:
+This log explains the built-in security posture of TheArchives V2 and why failure behavior is intentional rather than incidental.
+
+Core principle:
+- Read, decide, and write are separated into different services so no single component can silently mutate state end-to-end.
+
+How that separation is enforced:
+1) Retrieval and planning are isolated from writes
+- Charon plans from read context and uses TheKeeper first.
+- TheKeeper provides read-optimized state only.
+- Context failure can degrade planning quality, but it cannot directly commit data.
+
+2) Governance is explicit and auditable
+- JudgeJudy evaluates signed proposals and records decision rationale.
+- DOOM persists decision history and override trails.
+- If policy checks fail, decisions return rejection states instead of best-effort writes.
+
+3) Writes are gated to approved paths
+- Dewey applies approved changes through controlled operations.
+- Unapproved or malformed inputs do not get direct write access.
+- This creates a hard boundary between agent reasoning and persistence.
+
+4) Ingestion is treated as hostile until proven safe
+- Milo limits source scope and sanitizes fetched guide content.
+- Rejections and scrape failures are recorded as security events.
+- The dashboard moderation path routes through Milo APIs so review actions are attributable.
+
+Failure behavior by design:
+- User data corruption scenario: planning and display can degrade, but commit paths remain controlled and auditable.
+- Milo data corruption scenario: suspicious ingestion is rejected or quarantined, creating security events instead of silent propagation.
+- Service outage scenario: dependent paths fail closed and surface warnings, preserving integrity over partial success.
+
+Operational result:
+- The system prefers explicit rejection, quarantine, and audit logging over hidden retries that could contaminate state.
+- This trades short-term convenience for long-term integrity, traceability, and safer recovery.
+
+What to verify during operations:
+- Moderation queue contains expected OPEN/ACKNOWLEDGED/RESOLVED transitions.
+- Audit trails in Judy and Milo are present for each high-impact action.
+- Dewey write actions correspond to approved governance outcomes.
+- Keeper refreshes follow approved commits without bypass signals.

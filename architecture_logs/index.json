@@ -7,5 +7,14 @@
     "date": "2026-07-14",
     "subtitle": "One phased delivery for trust, moderation, and demo readiness.",
     "repoLink": "https://github.com/HarpN/TheArchives"
+  },
+  {
+    "id": "log-002",
+    "file": "Log-002.txt",
+    "category": "Architecture Log",
+    "title": "Inherent Security Model And Failure Handling In TheArchives V2",
+    "date": "2026-07-15",
+    "subtitle": "Why the stack fails closed, records evidence, and keeps writes gated.",
+    "repoLink": "https://github.com/HarpN/TheArchives"
   }
 ]
