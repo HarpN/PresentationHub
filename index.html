@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Public architecture journal and evolution map for Trophy Backlog repositories.">
     <title>Trophy Backlog Command Center Hub</title>
     
     <!-- Tailwind CSS & Google Fonts -->
@@ -434,7 +435,7 @@
                         <p class="text-xs text-slate-400">Run standard safe backlogs or mock SQL string exploits. The simulated trace logs adapt instantly to whichever topology tab is currently selected above.</p>
                         
                         <div class="space-y-3">
-                            <button onclick="triggerSim('standard')" class="w-full py-3 px-4 bg-blue-650/10 border border-blue-500/20 hover:bg-blue-600/20 transition rounded-lg font-semibold text-sm text-blue-400 flex items-center justify-between">
+                            <button onclick="triggerSim('standard')" class="w-full py-3 px-4 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition rounded-lg font-semibold text-sm text-blue-400 flex items-center justify-between">
                                 <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">cloud_sync</span> STANDARD SYNC</span>
                                 <span class="material-icons text-xs font-mono">play_arrow</span>
                             </button>
@@ -526,50 +527,17 @@
                     <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architect local Notebook</span>
                     <h3 class="text-2xl font-bold text-white">Migration Logs & Systems Journals</h3>
                     <p class="text-slate-400 text-sm max-w-xl">
-                        Document and track transition requirements. Saved architectural journals are stored locally in the browser frame.
+                        Document and track transition requirements. Entries are loaded directly from repository files in architecture_logs.
                     </p>
                 </div>
-                <button onclick="toggleBlogEditor()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-xs font-bold inline-flex items-center space-x-2">
-                    <span class="material-icons text-sm">create</span>
-                    <span>Write Architecture Log</span>
+                <button onclick="renderBlogPosts()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-xs font-bold inline-flex items-center space-x-2">
+                    <span class="material-icons text-sm">refresh</span>
+                    <span>Refresh Architecture Logs</span>
                 </button>
             </div>
 
-            <!-- CMS Interactive Dynamic Form Editor (Hidden by default) -->
-            <div id="blog-editor-form" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h4 id="editor-form-title" class="text-base font-bold text-white">Publish New Entry</h4>
-                    <button onclick="toggleBlogEditor()" class="text-slate-400 hover:text-white transition"><span class="material-icons text-sm">close</span></button>
-                </div>
-                
-                <input type="hidden" id="edit-post-id" value="">
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Migration Phase</label>
-                        <select id="post-category" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono">
-                            <option value="Phase 1: V1 Refactoring">Phase 1: V1 Refactoring</option>
-                            <option value="Phase 2: V2 Docker Orchestration">Phase 2: V2 Docker Orchestration</option>
-                            <option value="Phase 3: V3 Zero-Trust Target">Phase 3: V3 Zero-Trust Target</option>
-                            <option value="Vulnerability Log">Vulnerability Log</option>
-                            <option value="Security Architecture">Security Architecture</option>
-                        </select>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Journal Title</label>
-                        <input type="text" id="post-title" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. Decoupling sync_backlog.js to isolated nodes">
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Content Markdown/HTML</label>
-                    <textarea id="post-content" rows="6" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" placeholder="Write journal notes here..."></textarea>
-                </div>
-
-                <div class="flex justify-end space-x-3">
-                    <button onclick="toggleBlogEditor()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition text-xs font-bold text-slate-400">Cancel</button>
-                    <button id="save-post-btn" onclick="saveBlogPost()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition text-xs font-bold text-white">Commit Journal</button>
-                </div>
+            <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-lg text-xs text-slate-400 font-mono">
+                Authoring note: add or edit .txt logs under architecture_logs and update architecture_logs/index.json to publish new entries.
             </div>
 
             <!-- Blog Output Grid -->
@@ -607,7 +575,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500">
             <p>© 2026 Trophy Backlog Command Center. Configured for V1, V2 and V3 models.</p>
             <div class="flex space-x-6 mt-4 md:mt-0">
-                <span class="hover:text-slate-300 transition cursor-pointer" onclick="clearBlogMemory()">Reset Local Logs</span>
+                <span class="hover:text-slate-300 transition cursor-pointer" onclick="renderBlogPosts()">Reload Logs</span>
                 <span class="hover:text-slate-300 transition cursor-pointer font-mono">V3.5.0-STAGE</span>
             </div>
         </div>
@@ -619,6 +587,10 @@
 
         // Track Active Topology Phase (v1, v2, v3)
         let activeTopology = "v2";
+
+        // Repo-backed architecture log settings
+        const ARCHITECTURE_LOG_INDEX_URL = "./architecture_logs/index.json";
+        let loadedArchitecturePosts = [];
 
         // Preloaded Phase 1 Specifications (Single python script in standalone Docker)
         const v1Components = {
@@ -743,43 +715,6 @@
                 protocol: "Secure Client Environment"
             }
         };
-
-        // Static Default Articles for First Boot CMS load
-        const defaultBlogPosts = [
-            {
-                id: "post_1",
-                category: "Phase 1: V1 Refactoring",
-                title: "Deconstructing V1 Monolithic Scraper Python Scripts",
-                content: `
-                    <p>In Phase 1 (V1), our script run was entirely contained in a single standalone Docker environment. While simple, pulling API endpoints, checking credentials, parsing data, and committing changes inside a single script run creates critical single points of failure.</p>
-                    <p><strong>The Operational Threat:</strong></p>
-                    <p>If an API returns hostile values, or a user modifies database credentials in the environmental config, the entire execution shell is vulnerable to full host takeovers. Our path forward requires first separating visual display from synchronization logic.</p>
-                `,
-                date: "2026-07-10 14:30"
-            },
-            {
-                id: "post_2",
-                category: "Phase 2: V2 Docker Orchestration",
-                title: "Decoupling Storage and Frontend with Docker-Compose",
-                content: `
-                    <p>In Phase 2 (V2), we isolated our system components into orchestrated multi-container deployments. The Streamlit dashboard runs in its own UI container, communicating with python data structures, while node sync-bridges write database streams directly to SQLite mounts.</p>
-                    <p><strong>Remaining Exposure:</strong></p>
-                    <p>Even though containers run on dedicated service planes, they continue to map the central uninsulated database volume directly. A database query injection parsed via scraping threads can still compromise core data integrity.</p>
-                `,
-                date: "2026-07-11 11:20"
-            },
-            {
-                id: "post_3",
-                category: "Phase 3: V3 Zero-Trust Target",
-                title: "Securing Data Admissions with MCP and Rhadamanthys",
-                content: `
-                    <p>Phase 3 (V3) transitions our platform to decoupled Model Context Protocol (MCP) servers and Zero-Trust zones.</p>
-                    <p><strong>The Admission Loop:</strong></p>
-                    <p>Instead of direct writes, scraped backlogs are normalized by Minos and strictly validated by the Rhadamanthys admission judge. Valid transactions write solely to an append-only, immutable recovery ledger (The Vault). From there, changes propagate outbound to sandboxed local replicas (TheKeeper) for local user interaction, preventing core security incidents from impacting persistent master storage.</p>
-                `,
-                date: "2026-07-12 09:15"
-            }
-        ];
 
         // Toast notifications helper to prevent raw alert usage
         function showToast(message, type = 'success') {
@@ -1120,6 +1055,21 @@
             fetchRepositories();
         }
 
+        function escapeHTML(value) {
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function safeUrl(value) {
+            const url = String(value || "").trim();
+            if (/^https:\/\//i.test(url)) return url;
+            return "#";
+        }
+
         // Live unauthenticated fetch from GitHub REST API
         async function fetchRepositories() {
             const username = document.getElementById("gh-username").value.trim();
@@ -1155,6 +1105,10 @@
                 repos.forEach(repo => {
                     // Check if there is already an active architecture mapping saved in storage
                     const previouslyLinked = Object.keys(repositoryAssociations).find(key => repositoryAssociations[key] === repo.name);
+                    const safeRepoName = escapeHTML(repo.name || "Unknown");
+                    const safeRepoDescription = escapeHTML(repo.description || "Contains source code, configurations, or orchestration files for the backlog scraper execution matrix.");
+                    const safeRepoLanguage = escapeHTML(repo.language || "Python");
+                    const repoUrl = safeUrl(repo.html_url);
                     
                     const card = document.createElement("div");
                     card.className = "bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
@@ -1165,19 +1119,19 @@
                             <div class="flex justify-between items-start">
                                 <span class="material-icons text-blue-400 text-lg">snippet_folder</span>
                                 <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
-                                    ${repo.language || "Python"}
+                                    ${safeRepoLanguage}
                                 </span>
                             </div>
-                            <h4 class="text-base font-bold text-white truncate" title="${repo.name}">${repo.name}</h4>
+                            <h4 class="text-base font-bold text-white truncate" title="${safeRepoName}">${safeRepoName}</h4>
                             <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">
-                                ${repo.description || "Contains source code, configurations, or orchestration files for the backlog scraper execution matrix."}
+                                ${safeRepoDescription}
                             </p>
                         </div>
 
                         <!-- Dropdown to explicitly assign live repository to design components -->
                         <div class="pt-3 border-t border-slate-900 space-y-2">
                             <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Bind to Phase Components</label>
-                            <select onchange="associateRepo(this, '${repo.name}')" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-[11px] text-slate-300 focus:outline-none">
+                            <select onchange='associateRepo(this, ${JSON.stringify(repo.name)})' class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-[11px] text-slate-300 focus:outline-none">
                                 <option value="">-- Unassigned (Not in Evolution Map) --</option>
                                 <optgroup label="Phase 1: V1 Standalone Script">
                                     <option value="raw_scraper" ${previouslyLinked === "raw_scraper" ? "selected" : ""}>V1 Standalone Python Scraper</option>
@@ -1207,7 +1161,7 @@
                         <div class="pt-3 border-t border-slate-900 flex justify-between items-center text-xs text-slate-500 font-mono">
                             <span class="flex items-center"><span class="material-icons text-sm mr-1 text-amber-400">star</span> ${repo.stargazers_count}</span>
                             <span class="flex items-center"><span class="material-icons text-sm mr-1">call_split</span> ${repo.forks_count}</span>
-                            <a href="${repo.html_url}" target="_blank" class="text-blue-400 hover:text-blue-300 font-bold flex items-center">
+                            <a href="${repoUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 font-bold flex items-center">
                                 <span>Code</span>
                                 <span class="material-icons text-xs ml-0.5">open_in_new</span>
                             </a>
@@ -1259,149 +1213,147 @@
             }
         }
 
-        // CMS Blog Engine Core Functions
-        function getStoredPosts() {
-            let posts = localStorage.getItem('architecture_posts_v2');
-            if (!posts) {
-                localStorage.setItem('architecture_posts_v2', JSON.stringify(defaultBlogPosts));
-                return defaultBlogPosts;
-            }
-            return JSON.parse(posts);
+        // CMS Blog Engine Core Functions (Repo-backed architecture logs)
+        function renderParagraphHTML(rawText) {
+            return rawText
+                .split(/\n{2,}/)
+                .map(paragraph => `<p>${escapeHTML(paragraph).replace(/\n/g, "<br>")}</p>`)
+                .join("");
         }
 
-        function renderBlogPosts() {
-            const blogGrid = document.getElementById("blog-grid");
-            const posts = getStoredPosts();
-            blogGrid.innerHTML = ""; // Clear existing grid
+        function parseArchitectureLog(rawText, manifestEntry) {
+            const lines = String(rawText || "").split(/\r?\n/);
+            const headers = {};
+            let messageIndex = -1;
 
-            posts.forEach(post => {
-                const article = document.createElement("article");
-                article.className = "bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between";
-                article.innerHTML = `
-                    <div class="p-6 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">${post.category}</span>
-                            <span class="text-[9px] text-slate-500 font-mono">${post.date || 'Notebook Entry'}</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-white line-clamp-2">${post.title}</h4>
-                        <div class="text-slate-400 text-xs leading-relaxed line-clamp-3">
-                            ${post.content}
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
-                        <div class="flex space-x-2">
-                            <button onclick="editBlogPost('${post.id}')" class="text-slate-400 hover:text-white font-bold inline-flex items-center transition">
-                                <span class="material-icons text-sm mr-0.5">edit</span>
-                                <span>Edit</span>
-                            </button>
-                            <button onclick="deleteBlogPost('${post.id}')" class="text-rose-400 hover:text-rose-300 font-bold inline-flex items-center transition">
-                                <span class="material-icons text-sm mr-0.5">delete</span>
-                                <span>Delete</span>
-                            </button>
-                        </div>
-                        <button onclick="showBlogPost('${post.id}')" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
-                            <span>Read Article</span>
-                            <span class="material-icons text-sm ml-1">arrow_forward</span>
-                        </button>
-                    </div>
-                `;
-                blogGrid.appendChild(article);
-            });
-        }
-
-        function toggleBlogEditor() {
-            const form = document.getElementById("blog-editor-form");
-            form.classList.toggle("hidden");
-            
-            // Clear inputs for clean form write
-            document.getElementById("edit-post-id").value = "";
-            document.getElementById("post-title").value = "";
-            document.getElementById("post-content").value = "";
-            document.getElementById("editor-form-title").innerText = "Publish New Entry";
-            document.getElementById("save-post-btn").innerText = "Commit Journal";
-        }
-
-        function saveBlogPost() {
-            const idInput = document.getElementById("edit-post-id").value;
-            const category = document.getElementById("post-category").value;
-            const title = document.getElementById("post-title").value.trim();
-            const content = document.getElementById("post-content").value.trim();
-            
-            if (!title || !content) {
-                showToast("Please enter both a title and article body.", "error");
-                return;
-            }
-
-            const posts = getStoredPosts();
-            const now = new Date();
-            const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            if (idInput) {
-                // Edit existing post
-                const matchIndex = posts.findIndex(p => p.id === idInput);
-                if (matchIndex !== -1) {
-                    posts[matchIndex].category = category;
-                    posts[matchIndex].title = title;
-                    posts[matchIndex].content = content;
-                    posts[matchIndex].date = `${timestamp} (Edited)`;
+            lines.forEach((line, index) => {
+                if (/^message\s*:/i.test(line.trim())) {
+                    messageIndex = index;
+                    return;
                 }
-                showToast("Journal entry updated successfully!");
-            } else {
-                // Add new post
-                const newPost = {
-                    id: "post_" + Date.now(),
-                    category,
-                    title,
-                    content,
-                    date: timestamp
-                };
-                posts.unshift(newPost);
-                showToast("Saved new entry to local notebooks!");
+
+                const headerMatch = line.match(/^([A-Za-z ]+):\s*(.*)$/);
+                if (headerMatch && messageIndex === -1) {
+                    headers[headerMatch[1].trim().toLowerCase()] = headerMatch[2].trim();
+                }
+            });
+
+            const body = (messageIndex >= 0 ? lines.slice(messageIndex + 1).join("\n") : lines.join("\n")).trim();
+            const title = manifestEntry.title || headers.subject || manifestEntry.file || "Architecture Log";
+            const category = manifestEntry.category || "Architecture Log";
+            const subtitle = manifestEntry.subtitle || headers.subtitle || "";
+            const repoLink = manifestEntry.repoLink || headers["repo link"] || "";
+            const date = manifestEntry.date || headers.date || "Undated";
+            const summary = subtitle || body.split(/\n/)[0] || "No summary available.";
+
+            return {
+                id: manifestEntry.id || manifestEntry.file || title,
+                file: manifestEntry.file || "",
+                category,
+                title,
+                subtitle,
+                repoLink,
+                date,
+                summary,
+                contentHtml: renderParagraphHTML(body || "No message body found.")
+            };
+        }
+
+        async function getRepoBackedPosts() {
+            const indexResponse = await fetch(ARCHITECTURE_LOG_INDEX_URL, { cache: "no-store" });
+            if (!indexResponse.ok) {
+                throw new Error("Unable to load architecture_logs/index.json. Add a manifest for GitHub Pages blog loading.");
             }
 
-            localStorage.setItem('architecture_posts_v2', JSON.stringify(posts));
-            renderBlogPosts();
-            toggleBlogEditor();
+            const manifest = await indexResponse.json();
+            if (!Array.isArray(manifest)) {
+                throw new Error("architecture_logs/index.json must be a JSON array of log entries.");
+            }
+
+            const posts = await Promise.all(manifest.map(async (entry) => {
+                if (!entry || !entry.file) {
+                    throw new Error("Each manifest entry must include a file value.");
+                }
+
+                const filePath = `./architecture_logs/${entry.file}`;
+                const logResponse = await fetch(filePath, { cache: "no-store" });
+                if (!logResponse.ok) {
+                    throw new Error(`Unable to load architecture log file: ${entry.file}`);
+                }
+
+                const logText = await logResponse.text();
+                return parseArchitectureLog(logText, entry);
+            }));
+
+            return posts.sort((a, b) => String(b.date).localeCompare(String(a.date)));
         }
 
-        function editBlogPost(id) {
-            const posts = getStoredPosts();
-            const post = posts.find(p => p.id === id);
+        async function renderBlogPosts() {
+            const blogGrid = document.getElementById("blog-grid");
+            blogGrid.innerHTML = `
+                <div class="text-center py-12 text-slate-400 col-span-full space-y-3">
+                    <span class="material-icons animate-spin text-3xl text-indigo-400">sync</span>
+                    <p class="text-xs font-mono">Loading architecture logs from repository files...</p>
+                </div>`;
+
+            try {
+                loadedArchitecturePosts = await getRepoBackedPosts();
+
+                if (loadedArchitecturePosts.length === 0) {
+                    blogGrid.innerHTML = `<div class="text-center py-12 text-slate-500 col-span-full">No architecture log entries found in architecture_logs/index.json.</div>`;
+                    return;
+                }
+
+                blogGrid.innerHTML = "";
+
+                loadedArchitecturePosts.forEach((post, index) => {
+                    const article = document.createElement("article");
+                    article.className = "bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col justify-between";
+                    article.innerHTML = `
+                        <div class="p-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">${escapeHTML(post.category)}</span>
+                                <span class="text-[9px] text-slate-500 font-mono">${escapeHTML(post.date || "Notebook Entry")}</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white line-clamp-2">${escapeHTML(post.title)}</h4>
+                            <div class="text-slate-400 text-xs leading-relaxed line-clamp-3">${escapeHTML(post.summary)}</div>
+                        </div>
+                        <div class="p-6 pt-0 border-t border-slate-900 flex items-center justify-between text-xs">
+                            <span class="text-slate-500 font-mono">${escapeHTML(post.file || "")}</span>
+                            <button onclick="showBlogPost(${index})" class="text-blue-400 hover:text-blue-300 font-bold flex items-center transition">
+                                <span>Read Article</span>
+                                <span class="material-icons text-sm ml-1">arrow_forward</span>
+                            </button>
+                        </div>
+                    `;
+                    blogGrid.appendChild(article);
+                });
+            } catch (error) {
+                blogGrid.innerHTML = `
+                    <div class="text-center py-12 text-red-400 border border-red-500/10 bg-red-950/5 rounded-xl col-span-full space-y-2">
+                        <span class="material-icons text-3xl">error_outline</span>
+                        <p class="text-sm font-semibold">${escapeHTML(error.message)}</p>
+                        <p class="text-xs text-slate-400 font-mono">Expected source: architecture_logs/index.json + architecture_logs/*.txt</p>
+                    </div>`;
+            }
+        }
+
+        function showBlogPost(index) {
+            const post = loadedArchitecturePosts[index];
             if (!post) return;
 
-            // Open editor in Edit mode
-            const form = document.getElementById("blog-editor-form");
-            form.classList.remove("hidden");
-
-            document.getElementById("edit-post-id").value = post.id;
-            document.getElementById("post-category").value = post.category;
-            document.getElementById("post-title").value = post.title;
-            document.getElementById("post-content").value = post.content;
-            
-            document.getElementById("editor-form-title").innerText = `Edit: ${post.title}`;
-            document.getElementById("save-post-btn").innerText = "Commit Update";
-            
-            // Smooth scroll to editor
-            form.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function deleteBlogPost(id) {
-            const posts = getStoredPosts();
-            const filtered = posts.filter(p => p.id !== id);
-            localStorage.setItem('architecture_posts_v2', JSON.stringify(filtered));
-            renderBlogPosts();
-            showToast("Notebook entry deleted.", "warning");
-        }
-
-        function showBlogPost(id) {
-            const posts = getStoredPosts();
-            const post = posts.find(p => p.id === id);
-            if (!post) return;
+            const safeRepoLink = safeUrl(post.repoLink);
+            const metadata = `
+                <div class="mt-5 pt-4 border-t border-slate-800 space-y-1 text-xs text-slate-400 font-mono">
+                    <div>Source File: ${escapeHTML(post.file || "N/A")}</div>
+                    <div>Date: ${escapeHTML(post.date || "Undated")}</div>
+                    ${safeRepoLink === "#" ? "" : `<div>Repo Link: <a href="${safeRepoLink}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">${escapeHTML(post.repoLink)}</a></div>`}
+                </div>`;
 
             document.getElementById("modal-category").innerText = post.category;
             document.getElementById("modal-title").innerText = post.title;
-            document.getElementById("modal-content").innerHTML = post.content;
-            
+            document.getElementById("modal-content").innerHTML = post.contentHtml + metadata;
+
             document.getElementById("article-modal").classList.remove("hidden");
             document.body.classList.add("overflow-hidden");
         }
@@ -1411,20 +1363,12 @@
             document.body.classList.remove("overflow-hidden");
         }
 
-        function clearBlogMemory() {
-            localStorage.removeItem('architecture_posts_v2');
-            localStorage.removeItem('repo_associations_v2');
-            repositoryAssociations = {};
-            renderBlogPosts();
-            showToast("Reset local memory logs successfully.", "warning");
-        }
-
         // Initialize Workspace Application
         window.onload = function() {
             // Default select V2 view on boot as requested (Existing monolithic multi-container setup)
             switchTopology('v2');
 
-            // Initialize and render notebooks from storage CMS
+            // Initialize and render blog entries from repository files
             renderBlogPosts();
             
             // Execute the default preset unauthenticated GitHub project query

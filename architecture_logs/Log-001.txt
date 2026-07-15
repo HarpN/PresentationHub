@@ -1,0 +1,40 @@
+Subject: Security Hardening And Service-Boundary Consolidation
+Date: 2026-07-14
+Category: Architecture Log
+Subtitle: One phased delivery for trust, moderation, and demo readiness.
+Repo Link: https://github.com/HarpN
+---
+Message:
+This cycle is documented as a single architecture hardening phase to reflect intent and reduce fragmented change tracking.
+
+What was delivered, grouped by workstream:
+
+1) Trust boundary and ingestion controls
+- Source allowlisting and sanitizer-gated guide ingestion in Milo.
+- Security rejections now captured as first-class events.
+- Trust metadata persisted into Keeper and consumed by Charon retrieval.
+- Retrieval path is fail-closed for unapproved chunks when trust columns exist.
+
+2) Moderation lifecycle and retention
+- Added explicit event review statuses: OPEN, ACKNOWLEDGED, RESOLVED.
+- Added retention policy with dry-run preview and apply behavior.
+- Added destructive-action confirmation in UI for non-dry-run retention.
+
+3) Service-boundary cleanup and observability
+- Dashboard moderation path moved from direct DB writes to Milo gRPC methods.
+- Added Milo moderation audit trail with actor attribution.
+- Added list-audit API and dashboard view for recent moderation actions.
+- Added indexes for event/audit query paths.
+
+4) Runtime safety and verification tooling
+- Added per-domain cooldown to reduce repeated scrape pressure.
+- Added response-size caps for inbound guide payload safety.
+- Added dashboard Milo service readiness/warning banner.
+- Added security smoke script for staged runtime verification.
+
+Verification snapshot:
+- Milo tests are green after these changes.
+- Updated files pass editor diagnostics.
+- Smoke script requires valid Milo auth token; run is blocked when token is unset.
+
+This record intentionally consolidates related changes into outcome-driven phases so implementation effort is represented as planned system maturation, not reactive patch churn.

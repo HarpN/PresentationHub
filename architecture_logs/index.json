@@ -1,0 +1,11 @@
+[
+  {
+    "id": "log-001",
+    "file": "Log-001.txt",
+    "category": "Phase 3: V3 Zero-Trust Target",
+    "title": "Refactoring Ingestion onto the Ingestion Council",
+    "date": "2026-07-12",
+    "subtitle": "Isolating Sly and Milo behind structural network guards.",
+    "repoLink": "https://github.com/HarpN/thearchives"
+  }
+]

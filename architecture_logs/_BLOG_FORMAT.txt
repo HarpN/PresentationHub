@@ -1,0 +1,10 @@
+Subject: Short post title
+Date: 2026-07-13
+Category: Architecture Log
+Subtitle: One-line summary for card preview.
+Repo Link: https://github.com/HarpN/thearchives
+---
+Message:
+Write your post body here.
+
+You can use multiple paragraphs by adding blank lines.
