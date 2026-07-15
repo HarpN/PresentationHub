@@ -1412,6 +1412,7 @@
                     <a href="#evolution-map" class="text-slate-300 hover:text-white transition text-sm font-medium">Architecture Diagram</a>
                     <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Failure Demo</a>
                     <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">Repo Labels</a>
+                    <a href="#setup-runbook" class="text-slate-300 hover:text-white transition text-sm font-medium">Setup & Run</a>
                     <a href="#cms-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Architect Notebook</a>
                 `;
             }
@@ -1583,6 +1584,52 @@
                 presentationHubRenderRepoCards();
             }
 
+            let setupSection = document.getElementById('setup-runbook');
+            const setupAnchor = document.getElementById('cms-blog');
+            if (!setupSection && setupAnchor && setupAnchor.parentElement) {
+                setupSection = document.createElement('section');
+                setupSection.id = 'setup-runbook';
+                setupSection.className = setupAnchor.className;
+                setupAnchor.parentElement.insertBefore(setupSection, setupAnchor);
+            }
+            if (setupSection) {
+                setupSection.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase">Setup & Run</span>
+                            <h3 class="text-2xl font-bold text-white">How to get TheArchives working on your system</h3>
+                            <p class="text-slate-400 text-sm max-w-3xl">TheArchives is the integration repo. Charon, sly, milo, JudgeJudy, DOOM, Dewey, and TheKeeper are linked into it as Git submodules. PresentationHub is documentation-only and is not part of the runtime app.</p>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 font-mono">Recommended first clone</span>
+                                <h4 class="text-xl font-bold text-white">Clone the integration repo with submodules</h4>
+                                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 font-mono text-xs text-slate-200 overflow-x-auto">
+                                    git clone --recurse-submodules https://github.com/HarpN/TheArchives.git
+                                </div>
+                                <p class="text-slate-400 text-sm leading-7">If you already cloned TheArchives without submodules, initialize them with the command below or run <span class="font-mono text-slate-200">./scripts/bootstrap_workspace.ps1</span> from repository root.</p>
+                                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 font-mono text-xs text-slate-200 overflow-x-auto">
+                                    git submodule update --init --recursive
+                                </div>
+                            </article>
+                            <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-sky-400 font-mono">Daily runbook</span>
+                                <h4 class="text-xl font-bold text-white">Start, use, and stop the stack</h4>
+                                <ol class="space-y-3 text-sm text-slate-300 list-decimal list-inside leading-7">
+                                    <li>Create <span class="font-mono text-slate-200">scraper/.env</span> from <span class="font-mono text-slate-200">scraper/.env.example</span> and set <span class="font-mono text-slate-200">PSN_NPSSO</span>.</li>
+                                    <li>Start the integration stack from TheArchives root with <span class="font-mono text-slate-200">./scripts/launch_all.ps1</span>.</li>
+                                    <li>Open the dashboard at <span class="font-mono text-slate-200">http://localhost:8501</span>.</li>
+                                    <li>Stop the stack with <span class="font-mono text-slate-200">./scripts/stop_all.ps1</span>.</li>
+                                </ol>
+                                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-slate-400 leading-6">
+                                    Use the snapshot scripts only when you already have a prepared snapshot bundle. For maintainers, the source-of-truth integration flow is TheArchives plus its submodules.
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                `;
+            }
+
             const cms = document.getElementById('cms-blog');
             if (cms) {
                 cms.innerHTML = `
@@ -1591,7 +1638,7 @@
                             <div class="space-y-2">
                                 <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architect local Notebook</span>
                                 <h3 class="text-2xl font-bold text-white">Migration Logs & Systems Journals</h3>
-                                <p class="text-slate-400 text-sm max-w-xl">Only Log-001.txt remains published. The next post will cover the inherent security and failure handling of the app.</p>
+                                <p class="text-slate-400 text-sm max-w-xl">The published logs track the hardening and operational model behind the current V2 architecture.</p>
                             </div>
                             <button onclick="presentationHubRenderBlog()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-xs font-bold inline-flex items-center space-x-2">
                                 <span class="material-icons text-sm">refresh</span>
@@ -1618,9 +1665,13 @@
                                 </a>
                             </article>
                             <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">Next log</span>
-                                <h4 class="text-xl font-bold text-white">Security and failure handling</h4>
-                                <p class="text-slate-300 text-sm leading-7">This is the next post to draft. It should explain how V2 handles corruption, rejection, fallback, and retention in practical terms.</p>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">Newly published</span>
+                                <h4 class="text-xl font-bold text-white">Inherent Security Model And Failure Handling In TheArchives V2</h4>
+                                <p class="text-slate-300 text-sm leading-7">Explains how V2 handles corruption, rejection, fallback, and retention through separated services and auditable boundaries.</p>
+                                <a href="./architecture_logs/Log-002.txt" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-300 hover:text-indigo-200 transition">
+                                    <span>Open Log-002.txt</span>
+                                    <span class="material-icons text-sm">open_in_new</span>
+                                </a>
                             </article>
                         </div>
                     </div>

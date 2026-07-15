@@ -5,6 +5,10 @@
     "description": "Architecture log and publishing asset repository",
     "default_branch": "main"
   },
+  "external_runtime_reference": {
+    "repo": "HarpN/TheArchives",
+    "setup_model": "TheArchives main with runtime component submodules; PresentationHub is excluded from runtime"
+  },
   "runtime": {
     "primary_mode": "documentation"
   },
@@ -18,10 +22,13 @@
   "entrypoint_files": [
     "README.md",
     "architecture_logs/Log-001.txt",
+    "architecture_logs/Log-002.txt",
+    "architecture_logs/index.json",
     "index.html"
   ],
   "agent_review_notes": [
     "Treat this repository as documentation-only unless scripts are added later.",
+    "Keep setup and bootstrap guidance aligned with TheArchives README and AGENT_CONTEXT.",
     "Prefer consistency checks across architecture logs and related service READMEs."
   ]
 }
