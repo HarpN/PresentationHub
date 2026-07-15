@@ -1070,6 +1070,582 @@
             return "#";
         }
 
+        // -----------------------------------------------------------------------------
+        // PresentationHub rewrite layer
+        // Keeps the existing shell but repurposes it into a strict V1 vs V2 view.
+        // -----------------------------------------------------------------------------
+        const presentationHubLayout = {
+            v1: {
+                badge: "V1 Legacy TheArchives",
+                zone: "Legacy single-script layout",
+                description: "One Python script owns scrape, parse, and write operations. A bad input can reach the same process that modifies the database.",
+                nodes: {
+                    script: {
+                        title: "Single Python script",
+                        desc: "Scrape, parse, and write all happen in one runtime path.",
+                        access: "Direct access to scraping and write logic",
+                        failure: "One bad input can compromise the whole runtime path.",
+                        icon: "code"
+                    },
+                    db: {
+                        title: "Local SQLite file",
+                        desc: "The database is written directly from the same script boundary.",
+                        access: "Direct read/write from the same script",
+                        failure: "Corruption affects the same file the script uses immediately.",
+                        icon: "storage"
+                    },
+                    terminal: {
+                        title: "Terminal output",
+                        desc: "Success and failure are only visible as raw stdout/stderr.",
+                        access: "Raw stdout/stderr only",
+                        failure: "Errors are visible, but they are not isolated or audited.",
+                        icon: "terminal"
+                    }
+                }
+            },
+            v2: {
+                badge: "V2 Current Agentic Stack",
+                zone: "Separated service layout",
+                description: "The agentic version splits orchestration, governance, execution, and read-only planning into separate repos so corruption is contained instead of spreading through one script.",
+                nodes: {
+                    charon: {
+                        title: "Charon",
+                        desc: "Orchestrates intent and retrieves context from TheKeeper first.",
+                        access: "Reads from TheKeeper first, then signs proposals to Judy",
+                        failure: "If context is bad, planning degrades without direct writes.",
+                        icon: "forum"
+                    },
+                    sly: {
+                        title: "sly",
+                        desc: "PSN telemetry ingest service that signs proposals for governance review.",
+                        access: "Signs telemetry proposals for governance review",
+                        failure: "Bad input is routed through council judgment instead of direct writes.",
+                        icon: "vpn_lock"
+                    },
+                    milo: {
+                        title: "milo",
+                        desc: "Guide scraping and moderation with allowlists, sanitizer, and audit APIs.",
+                        access: "Allowlisted ingest, sanitizer, moderation, and audit APIs",
+                        failure: "Corrupted guide data is rejected and recorded as a security event.",
+                        icon: "travel_explore"
+                    },
+                    judy: {
+                        title: "JudgeJudy",
+                        desc: "Judges proposals, records audits, and controls commit decisions.",
+                        access: "Approves, rejects, or defers proposals and writes audit logs",
+                        failure: "Rejected proposals remain visible in audit history instead of becoming writes.",
+                        icon: "gavel"
+                    },
+                    doom: {
+                        title: "DOOM",
+                        desc: "Decision ledger and override path with secondary validation.",
+                        access: "Records decisions and supports override validation",
+                        failure: "Failures are recorded in the ledger rather than lost.",
+                        icon: "assignment_turned_in"
+                    },
+                    dewey: {
+                        title: "Dewey",
+                        desc: "Approved write gateway that mutates persistence state.",
+                        access: "Only executes approved mandates with parameterized SQL",
+                        failure: "Bad writes are blocked by signature, verdict, and allowlist rules.",
+                        icon: "inventory"
+                    },
+                    thekeeper: {
+                        title: "TheKeeper",
+                        desc: "Read-optimized blended store and planning surface for Charon.",
+                        access: "Read-only retrieval for Charon and user-facing planning",
+                        failure: "If a local replica is dirty, the master write path remains separate.",
+                        icon: "dns"
+                    },
+                    scraper: {
+                        title: "scraper",
+                        desc: "Streamlit dashboard and admin surface for day-to-day use.",
+                        access: "Operates the dashboard, moderation panel, and service checks",
+                        failure: "Unavailable services are shown as warnings rather than hidden.",
+                        icon: "dashboard"
+                    }
+                }
+            }
+        };
+
+        const presentationHubRepos = [
+            { name: 'TheArchives', part: 'Workspace root', zone: 'Docs and orchestration', detail: 'Hosts the launch scripts, snapshot export, README, and machine-readable agent context for the whole app.', icon: 'folder_copy', tone: 'text-blue-300' },
+            { name: 'Charon', part: 'Orchestrator', zone: 'Agent zone', detail: 'Builds proposals, retrieves context from TheKeeper first, and sends signed requests to Judy.', icon: 'forum', tone: 'text-cyan-300' },
+            { name: 'sly', part: 'PSN ingest', zone: 'Agent zone', detail: 'Collects PSN telemetry and forwards signed proposals into the governance path.', icon: 'vpn_lock', tone: 'text-sky-300' },
+            { name: 'milo', part: 'Guide scraping and moderation', zone: 'Agent zone', detail: 'Scrapes guides, sanitizes content, records security events, and exposes moderation APIs.', icon: 'travel_explore', tone: 'text-violet-300' },
+            { name: 'JudgeJudy', part: 'Governance', zone: 'Council / commit control', detail: 'Judges proposals, records audit rows, and controls whether writes are approved or rejected.', icon: 'gavel', tone: 'text-amber-300' },
+            { name: 'DOOM', part: 'Decision ledger', zone: 'Executive zone', detail: 'Keeps the append-only decision history and override validation trail.', icon: 'assignment_turned_in', tone: 'text-orange-300' },
+            { name: 'Dewey', part: 'Write gateway', zone: 'Execution zone', detail: 'Applies approved changes through parameterized SQL only.', icon: 'inventory', tone: 'text-purple-300' },
+            { name: 'TheKeeper', part: 'Read replica', zone: 'User sandbox', detail: 'Serves read-optimized state to Charon so planning stays separate from writes.', icon: 'dns', tone: 'text-emerald-300' },
+            { name: 'scraper', part: 'User dashboard', zone: 'Local UI', detail: 'Streamlit interface for day-to-day use, moderation, and health visibility.', icon: 'dashboard', tone: 'text-sky-200' },
+            { name: 'PresentationHub', part: 'Docs/blog only', zone: 'Non-runtime', detail: 'Publishes architecture logs and self-hosted notes. It is not part of the app runtime.', icon: 'article', tone: 'text-slate-300' },
+        ];
+
+        const publishedLog = {
+            title: 'Security Hardening And Service-Boundary Consolidation',
+            file: './architecture_logs/Log-001.txt',
+            subtitle: 'One phased delivery for trust, moderation, and demo readiness.',
+            date: '2026-07-14'
+        };
+
+        let activePresentationVersion = 'v2';
+
+        function presentationHubSetInspector(key) {
+            const version = key.startsWith('v1-') ? 'v1' : 'v2';
+            const node = presentationHubLayout[version].nodes[key.replace(/^v[12]-/, '')];
+            if (!node) return;
+
+            document.getElementById('inspect-zone').innerText = presentationHubLayout[version].zone;
+            document.getElementById('inspect-zone').className = version === 'v1'
+                ? 'text-[10px] font-bold uppercase tracking-widest text-yellow-500 font-mono'
+                : 'text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono';
+            document.getElementById('inspect-title').innerText = node.title;
+            document.getElementById('inspect-desc').innerHTML = `<p>${node.desc}</p><p class="${version === 'v1' ? 'text-yellow-300' : 'text-blue-200'}">${version === 'v1' ? 'Legacy failure domain' : 'Contained failure boundary'}</p>`;
+            document.getElementById('inspect-access').innerText = node.access;
+            document.getElementById('inspect-protocol').innerText = node.failure;
+            const iconEl = document.getElementById('inspect-icon');
+            iconEl.innerText = node.icon;
+            iconEl.className = version === 'v1' ? 'material-icons text-yellow-500 text-3xl' : 'material-icons text-blue-500 text-3xl';
+
+            document.querySelectorAll('[id^="node-v1-"]').forEach(el => el.classList.remove('active-gold'));
+            document.querySelectorAll('[id^="node-v2-"]').forEach(el => el.classList.remove('active-blue'));
+            const activeNode = document.getElementById(`node-${key}`);
+            if (activeNode) activeNode.classList.add(version === 'v1' ? 'active-gold' : 'active-blue');
+        }
+
+        function presentationHubSwitch(version) {
+            activePresentationVersion = version;
+            const v1Area = document.getElementById('topology-v1');
+            const v2Area = document.getElementById('topology-v2');
+            const v1Badge = document.getElementById('v1-header-badge');
+            const v2Badge = document.getElementById('v2-header-badge');
+            const v1Btn = document.getElementById('toggle-v1-btn');
+            const v2Btn = document.getElementById('toggle-v2-btn');
+
+            v1Area.classList.toggle('hidden', version !== 'v1');
+            v2Area.classList.toggle('hidden', version !== 'v2');
+            v1Badge.classList.toggle('hidden', version !== 'v1');
+            v2Badge.classList.toggle('hidden', version !== 'v2');
+            v1Btn.className = version === 'v1'
+                ? 'px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
+                : 'px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white';
+            v2Btn.className = version === 'v2'
+                ? 'px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/30'
+                : 'px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white';
+            presentationHubSetInspector(version === 'v1' ? 'v1-script' : 'v2-charon');
+        }
+
+        function presentationHubRunScenario(kind) {
+            const stateEl = document.getElementById('scenario-state');
+            const messageEl = document.getElementById('scenario-message');
+            const logEl = document.getElementById('scenario-log');
+            logEl.innerHTML = '';
+
+            const push = (message, tone = 'neutral') => {
+                const item = document.createElement('div');
+                item.className = tone === 'success' ? 'text-emerald-300' : tone === 'warning' ? 'text-amber-300' : tone === 'error' ? 'text-rose-300' : 'text-slate-300';
+                item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logEl.appendChild(item);
+            };
+
+            if (kind === 'success') {
+                stateEl.innerText = 'Approved';
+                messageEl.innerText = 'A successful V2 update flows through the service split: Charon plans, Judy approves, Dewey writes, and TheKeeper refreshes read-only context.';
+                push('Charon built a proposal from clean context.', 'success');
+                push('JudgeJudy returned APPROVED.', 'success');
+                push('Dewey committed the update safely.', 'success');
+                push('TheKeeper refreshed the read replica.', 'success');
+            } else if (kind === 'user') {
+                stateEl.innerText = 'Contained';
+                messageEl.innerText = 'If user-side data is corrupted, the bad state stays in the read-side workflow. TheKeeper and Charon can warn, but Dewey is not touched unless a proposal is approved.';
+                push('Corrupted user-side data detected in TheKeeper context.', 'warning');
+                push('Charon switched to read-only planning with warnings.', 'warning');
+                push('Execution path remained untouched.', 'success');
+            } else if (kind === 'milo') {
+                stateEl.innerText = 'Rejected';
+                messageEl.innerText = 'If Milo receives corrupted or suspicious guide content, it rejects the payload, records a security event, and exposes the failure to the dashboard instead of passing it deeper.';
+                push('Milo detected bad guide content.', 'warning');
+                push('Security event recorded with rejection reason.', 'error');
+                push('Dashboard can show the failure and audit history.', 'success');
+            } else {
+                stateEl.innerText = 'Restored';
+                messageEl.innerText = 'The display returns to a clean state. V2 keeps failures visible, isolated, and auditable instead of letting them overwrite the app runtime.';
+                push('Scenario reset to clean state.', 'success');
+            }
+        }
+
+        function presentationHubRenderRepoCards() {
+            const grid = document.getElementById('repo-grid');
+            grid.innerHTML = '';
+
+            presentationHubRepos.forEach((repo) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'node card rounded-3xl p-5 text-left';
+                button.onclick = () => {
+                    document.getElementById('inspect-zone').innerText = repo.zone;
+                    document.getElementById('inspect-zone').className = 'text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono';
+                    document.getElementById('inspect-title').innerText = repo.name;
+                    document.getElementById('inspect-desc').innerHTML = `<p>${repo.detail}</p><p class="${repo.tone}">${repo.part}</p>`;
+                    document.getElementById('inspect-access').innerText = repo.part;
+                    document.getElementById('inspect-protocol').innerText = repo.zone;
+                    const iconEl = document.getElementById('inspect-icon');
+                    iconEl.innerText = repo.icon;
+                    iconEl.className = `material-icons ${repo.tone} text-3xl`;
+                };
+
+                button.innerHTML = `
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <div class="mono text-[10px] uppercase tracking-[0.25em] ${repo.tone}">${repo.zone}</div>
+                            <h4 class="mt-2 text-xl font-bold text-white">${repo.name}</h4>
+                        </div>
+                        <span class="material-icons ${repo.tone} text-2xl">${repo.icon}</span>
+                    </div>
+                    <p class="mt-4 text-sm leading-7 text-slate-300">${repo.detail}</p>
+                    <div class="mt-4 inline-flex rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">${repo.part}</div>
+                `;
+                grid.appendChild(button);
+            });
+        }
+
+        function presentationHubRenderBlog() {
+            const blogGrid = document.getElementById('blog-grid');
+            if (!blogGrid) {
+                return;
+            }
+            blogGrid.innerHTML = `
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:col-span-2 lg:col-span-2 space-y-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono">Published Log</span>
+                        <span class="mono text-[11px] text-slate-500">${publishedLog.date}</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-white">${publishedLog.title}</h4>
+                    <p class="text-slate-300 text-sm leading-7">This is the only published log in PresentationHub right now. It documents the phased hardening work across trust boundaries, moderation, auditability, and runtime guardrails.</p>
+                    <div class="flex flex-wrap gap-2 text-xs text-slate-300">
+                        <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Trust boundary</span>
+                        <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Moderation lifecycle</span>
+                        <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Audit trail</span>
+                        <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Runtime guardrails</span>
+                    </div>
+                    <a href="${publishedLog.file}" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200 transition">
+                        <span>Open Log-001.txt</span>
+                        <span class="material-icons text-sm">open_in_new</span>
+                    </a>
+                </article>
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">Next log</span>
+                    <h4 class="text-xl font-bold text-white">Security and failure handling</h4>
+                    <p class="text-slate-300 text-sm leading-7">This will be the next post to draft. It should explain how V2 handles corruption, rejection, fallback, and retention in practical terms.</p>
+                </article>
+            `;
+        }
+
+        function presentationHubRewrite() {
+            document.title = 'TheArchives Architecture Hub';
+            const headerBadge = document.querySelector('header .inline-flex.items-center.px-2\\.5');
+            if (headerBadge) {
+                headerBadge.childNodes[2].textContent = 'Architecture V2 Ready';
+            }
+
+            const title = document.querySelector('main h2');
+            if (title) {
+                title.innerHTML = 'See the real layout of TheArchives across V1 and V2.';
+            }
+
+            const intro = document.querySelector('main p.max-w-2xl');
+            if (intro) {
+                intro.textContent = 'V1 is the legacy single-script app. V2 is the current agentic version with separated services, explicit governance, and read-only planning through TheKeeper. The page also shows what happens when user-side data or Milo content is corrupted.';
+            }
+
+            const contextPill = document.querySelector('main .inline-flex.items-center.space-x-2 .text-xs.text-slate-300.font-mono');
+            if (contextPill) {
+                contextPill.innerText = 'Current Context: 2-Stage Evolution Matrix';
+            }
+
+            const summaryCards = document.querySelectorAll('main > section.grid > div');
+            if (summaryCards.length > 1) {
+                summaryCards[1].innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">V1 / V2 migration status</span>
+                        <span class="text-xs text-blue-400 font-mono">Legacy to Agentic</span>
+                    </div>
+                    <div class="space-y-4 mt-4">
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>V1 legacy single-script flow</span>
+                                <span>Retired</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-yellow-500 to-emerald-500 h-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>V2 agentic service split</span>
+                                <span>Active</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Failure isolation and audit trail</span>
+                                <span>Implemented</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-blue-500 h-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const nav = document.querySelector('header nav');
+            if (nav) {
+                nav.innerHTML = `
+                    <a href="#evolution-map" class="text-slate-300 hover:text-white transition text-sm font-medium">Architecture Diagram</a>
+                    <a href="#simulator" class="text-slate-300 hover:text-white transition text-sm font-medium">Failure Demo</a>
+                    <a href="#github-hub" class="text-slate-300 hover:text-white transition text-sm font-medium">Repo Labels</a>
+                    <a href="#cms-blog" class="text-slate-300 hover:text-white transition text-sm font-medium">Architect Notebook</a>
+                `;
+            }
+
+            const toggleV3 = document.getElementById('toggle-v3-btn');
+            if (toggleV3) toggleV3.remove();
+            const badgeV3 = document.getElementById('v3-header-badge');
+            if (badgeV3) badgeV3.remove();
+            const topoV3 = document.getElementById('topology-v3');
+            if (topoV3) topoV3.remove();
+
+            const v1Header = document.getElementById('v1-header-badge');
+            if (v1Header) {
+                v1Header.innerHTML = '<span class="flex items-center font-mono uppercase tracking-wider"><span class="w-2.5 h-2.5 rounded-full bg-yellow-500 mr-2 animate-pulse"></span> Active: V1 legacy TheArchives</span><span class="text-slate-500 text-[11px]">One script, one file, one failure domain</span>';
+            }
+            const v2Header = document.getElementById('v2-header-badge');
+            if (v2Header) {
+                v2Header.innerHTML = '<span class="flex items-center font-mono uppercase tracking-wider"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2 animate-pulse"></span> Active: V2 current agentic stack</span><span class="text-slate-500 text-[11px]">Separated services, governance, and read-only planning</span>';
+            }
+
+            const v1Btn = document.getElementById('toggle-v1-btn');
+            const v2Btn = document.getElementById('toggle-v2-btn');
+            if (v1Btn) v1Btn.innerHTML = '<span class="material-icons text-sm">hourglass_empty</span><span>V1: Legacy TheArchives</span>';
+            if (v2Btn) v2Btn.innerHTML = '<span class="material-icons text-sm">settings_applications</span><span>V2: Current Agentic Version</span>';
+
+            const v1Grid = document.getElementById('topology-v1');
+            if (v1Grid) {
+                v1Grid.innerHTML = `
+                    <div class="border border-yellow-500/20 bg-yellow-950/5 p-4 rounded-xl relative">
+                        <span class="absolute top-2 left-2 text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Legacy single-process scope</span>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+                            <button onclick="presentationHubSetInspector('v1-script')" id="node-v1-script" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-yellow-500">code</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">Single Python script</h4>
+                                <p class="text-xs text-slate-400 mt-1">Scrape, parse, and write happen in one runtime path.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v1-db')" id="node-v1-db" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-rose-500">storage</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">Local SQLite file</h4>
+                                <p class="text-xs text-slate-400 mt-1">The database is modified directly by the same script.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v1-terminal')" id="node-v1-terminal" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-yellow-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-indigo-400">terminal</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">Terminal output</h4>
+                                <p class="text-xs text-slate-400 mt-1">Success and failure only surface as stdout/stderr.</p>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const v2Grid = document.getElementById('topology-v2');
+            if (v2Grid) {
+                v2Grid.innerHTML = `
+                    <div class="border border-blue-500/20 bg-blue-950/5 p-4 rounded-xl relative">
+                        <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-400 uppercase tracking-widest">Agentic service layout</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-6">
+                            <button onclick="presentationHubSetInspector('v2-charon')" id="node-v2-charon" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-cyan-400">forum</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">Charon</h4>
+                                <p class="text-xs text-slate-400 mt-1">Orchestrator and Keeper-first planning surface.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-sly')" id="node-v2-sly" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-sky-400">vpn_lock</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">sly</h4>
+                                <p class="text-xs text-slate-400 mt-1">PSN telemetry ingestion service.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-milo')" id="node-v2-milo" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-violet-400">travel_explore</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">milo</h4>
+                                <p class="text-xs text-slate-400 mt-1">Guide scraping, moderation, and audit APIs.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-judy')" id="node-v2-judy" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-amber-400">gavel</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">JudgeJudy</h4>
+                                <p class="text-xs text-slate-400 mt-1">Proposal governance and commit control.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-doom')" id="node-v2-doom" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-orange-400">assignment_turned_in</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">DOOM</h4>
+                                <p class="text-xs text-slate-400 mt-1">Decision ledger and override history.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-dewey')" id="node-v2-dewey" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-purple-400">inventory</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">Dewey</h4>
+                                <p class="text-xs text-slate-400 mt-1">Approved write gateway for persistence.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-thekeeper')" id="node-v2-thekeeper" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-emerald-400">dns</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">TheKeeper</h4>
+                                <p class="text-xs text-slate-400 mt-1">Read replica and planning context.</p>
+                            </button>
+                            <button onclick="presentationHubSetInspector('v2-scraper')" id="node-v2-scraper" class="cursor-pointer p-4 bg-slate-900 border border-slate-700 hover:border-blue-500 transition rounded-lg text-left relative node">
+                                <span class="material-icons text-sky-300">dashboard</span>
+                                <h4 class="text-sm font-bold mt-2 text-slate-100">scraper</h4>
+                                <p class="text-xs text-slate-400 mt-1">Dashboard and admin surface for daily use.</p>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const simulator = document.getElementById('simulator');
+            if (simulator) {
+                simulator.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold tracking-widest text-red-400 uppercase font-mono">Failure handling demo</span>
+                            <h3 class="text-2xl font-bold text-white">What happens when data gets corrupted?</h3>
+                            <p class="text-slate-400 text-sm max-w-3xl">Run a clean update, corrupt the user-side data, or corrupt Milo input and observe the difference between containment and rejection.</p>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <div class="lg:col-span-4 bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between space-y-6 card">
+                                <div class="space-y-3">
+                                    <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide">Scenario buttons</h4>
+                                    <div class="space-y-3">
+                                        <button onclick="presentationHubRunScenario('success')" class="w-full py-3 px-4 bg-emerald-600/10 border border-emerald-500/20 hover:bg-emerald-600/20 transition rounded-lg font-semibold text-sm text-emerald-300 flex items-center justify-between">
+                                            <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">cloud_done</span> SUCCESSFUL UPDATE</span>
+                                            <span class="material-icons text-xs font-mono">play_arrow</span>
+                                        </button>
+                                        <button onclick="presentationHubRunScenario('user')" class="w-full py-3 px-4 bg-amber-600/10 border border-amber-500/20 hover:bg-amber-600/20 transition rounded-lg font-semibold text-sm text-amber-300 flex items-center justify-between">
+                                            <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">person_off</span> USER DATA CORRUPTED</span>
+                                            <span class="material-icons text-xs font-mono">security</span>
+                                        </button>
+                                        <button onclick="presentationHubRunScenario('milo')" class="w-full py-3 px-4 bg-rose-600/10 border border-rose-500/20 hover:bg-rose-600/20 transition rounded-lg font-semibold text-sm text-rose-300 flex items-center justify-between">
+                                            <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">report_gmailerrorred</span> MILO DATA CORRUPTED</span>
+                                            <span class="material-icons text-xs font-mono">gavel</span>
+                                        </button>
+                                        <button onclick="presentationHubRunScenario('restore')" class="w-full py-3 px-4 bg-slate-600/10 border border-slate-500/20 hover:bg-slate-600/20 transition rounded-lg font-semibold text-sm text-slate-200 flex items-center justify-between">
+                                            <span class="flex items-center font-mono"><span class="material-icons mr-2 text-sm">restore</span> RESTORE CLEAN STATE</span>
+                                            <span class="material-icons text-xs font-mono">refresh</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800/80 text-xs space-y-2">
+                                    <div class="flex justify-between font-mono"><span class="text-slate-500">Status:</span><span id="scenario-state" class="text-slate-300">Ready</span></div>
+                                    <div class="flex justify-between font-mono"><span class="text-slate-500">Boundary:</span><span id="scenario-boundary" class="text-slate-300">V2 read/write split</span></div>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-[350px] card">
+                                <div class="border-b border-slate-800 bg-slate-900/60 px-4 py-3 flex items-center justify-between">
+                                    <div class="flex space-x-1.5">
+                                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                                    </div>
+                                    <span class="mono text-xs text-slate-500">failure_trace.log</span>
+                                </div>
+                                <div id="scenario-message" class="px-5 pt-5 pb-3 font-mono text-xs text-slate-300">A clean update should flow through V2 without exposing the write gateway to user-side corruption.</div>
+                                <div id="scenario-log" class="px-5 pb-5 font-mono text-xs space-y-3 overflow-y-auto flex-grow bg-slate-950 text-slate-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const githubHub = document.getElementById('github-hub');
+            if (githubHub) {
+                githubHub.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Repo labels</span>
+                            <h3 class="text-2xl font-bold text-white">Which repository does what in V2?</h3>
+                            <p class="text-slate-400 text-sm max-w-3xl">Click a repo card to send its role into the inspector panel beside the diagram.</p>
+                        </div>
+                        <div id="repo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </div>
+                `;
+                presentationHubRenderRepoCards();
+            }
+
+            const cms = document.getElementById('cms-blog');
+            if (cms) {
+                cms.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div class="space-y-2">
+                                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Architect local Notebook</span>
+                                <h3 class="text-2xl font-bold text-white">Migration Logs & Systems Journals</h3>
+                                <p class="text-slate-400 text-sm max-w-xl">Only Log-001.txt remains published. The next post will cover the inherent security and failure handling of the app.</p>
+                            </div>
+                            <button onclick="presentationHubRenderBlog()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition rounded-lg text-xs font-bold inline-flex items-center space-x-2">
+                                <span class="material-icons text-sm">refresh</span>
+                                <span>Refresh Architecture Logs</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 font-mono">Published Log</span>
+                                    <span class="mono text-[11px] text-slate-500">2026-07-14</span>
+                                </div>
+                                <h4 class="text-2xl font-bold text-white">Security Hardening And Service-Boundary Consolidation</h4>
+                                <p class="text-slate-300 text-sm leading-7">This is the only published log in PresentationHub right now. It documents the phased hardening work across trust boundaries, moderation, auditability, and runtime guardrails.</p>
+                                <div class="flex flex-wrap gap-2 text-xs text-slate-300">
+                                    <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Trust boundary</span>
+                                    <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Moderation lifecycle</span>
+                                    <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Audit trail</span>
+                                    <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1">Runtime guardrails</span>
+                                </div>
+                                <a href="./architecture_logs/Log-001.txt" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200 transition">
+                                    <span>Open Log-001.txt</span>
+                                    <span class="material-icons text-sm">open_in_new</span>
+                                </a>
+                            </article>
+                            <article class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 font-mono">Next log</span>
+                                <h4 class="text-xl font-bold text-white">Security and failure handling</h4>
+                                <p class="text-slate-300 text-sm leading-7">This is the next post to draft. It should explain how V2 handles corruption, rejection, fallback, and retention in practical terms.</p>
+                            </article>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Keep the existing blog manifest on disk; just ensure the visible page only shows Log-001.
+            const footer = document.querySelector('footer p');
+            if (footer) footer.innerText = '© 2026 TheArchives PresentationHub. V1 legacy and V2 current agentic layout.';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            presentationHubRewrite();
+            presentationHubSwitch('v2');
+            presentationHubSetInspector('v2-charon');
+            presentationHubRunScenario('success');
+        });
+
+        // Compatibility hooks for the existing page shell.
+        window.switchTopology = presentationHubSwitch;
+        window.inspectV1 = (key) => presentationHubSetInspector(`v1-${String(key).replace(/^v1-/, '')}`);
+        window.inspectV2 = (key) => presentationHubSetInspector(`v2-${String(key).replace(/^v2-/, '')}`);
+        window.inspectV3 = () => {};
+        window.triggerSim = presentationHubRunScenario;
+        window.fetchRepositories = presentationHubRenderRepoCards;
+        window.setAndQueryPreset = () => {};
+        window.renderBlogPosts = presentationHubRenderBlog;
+        window.displayLinkedRepo = () => {};
+
         // Live unauthenticated fetch from GitHub REST API
         async function fetchRepositories() {
             const username = document.getElementById("gh-username").value.trim();
